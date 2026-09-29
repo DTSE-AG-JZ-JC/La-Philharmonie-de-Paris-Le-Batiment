@@ -6,16 +6,17 @@
   <title>Philharmonie : Le Bâtiment</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Composant Model-Viewer optimisé -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap');
     body { font-family: 'Montserrat', sans-serif; color: #f4f4f5; overflow-x: hidden; }
     
     .hero-container {
       position: relative;
-      height: 80vh;
-      min-height: 600px;
+      height: 70vh;
+      min-height: 500px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -25,7 +26,7 @@
     }
 
     .hero-title {
-      font-size: clamp(3rem, 6vw, 5rem);
+      font-size: clamp(2.5rem, 8vw, 6rem);
       font-weight: 800;
       text-align: center;
       line-height: 1.1;
@@ -34,7 +35,7 @@
       background: linear-gradient(135deg, #ffffff, #d4af37);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      text-shadow: 0 10px 30px rgba(0,0,0,0.6);
     }
 
     .bird-layer {
@@ -46,8 +47,9 @@
     
     .bird-item {
       position: absolute;
-      width: 70px; 
-      height: 70px;
+      /* Taille responsive des oiseaux */
+      width: clamp(40px, 6vw, 80px);
+      height: clamp(40px, 6vw, 80px);
       cursor: pointer;
       pointer-events: auto;
       transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
@@ -55,16 +57,16 @@
     }
     
     .bird-item:hover {
-      transform: scale(1.6) rotate(5deg) !important;
-      filter: drop-shadow(0 0 15px #d4af37) brightness(1.3);
+      transform: scale(1.6) rotate(10deg) !important;
+      filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.8)) brightness(1.3);
       z-index: 50;
     }
     
-    .bird-item path {
+    .bird-item path, .bird-item polygon {
       transition: fill 0.3s ease, stroke 0.3s ease;
     }
     
-    .bird-item:hover path {
+    .bird-item:hover path, .bird-item:hover polygon {
       fill: #d4af37 !important;
       stroke: #fff !important;
     }
@@ -75,49 +77,72 @@
       border: 1px solid rgba(255,255,255,0.05);
       border-radius: 1rem;
     }
+    
+    /* Indication visuelle mobile pour le modèle 3D */
+    model-viewer {
+      --poster-color: transparent;
+    }
   </style>
 </head>
 <body class="antialiased">
 
   <header class="hero-container" id="hero">
-    <div class="absolute top-8 z-20 px-4 py-2 rounded-full border border-yellow-500/30 bg-yellow-500/10 text-yellow-500 text-sm font-semibold flex items-center gap-2">
+    <div class="absolute top-6 z-20 px-4 py-2 rounded-full border border-yellow-500/30 bg-yellow-500/10 text-yellow-500 text-xs md:text-sm font-semibold flex items-center gap-2 backdrop-blur-md">
       <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-      Acoustique active : Survolez les oiseaux pour jouer
+      Survolez (ou touchez) les oiseaux de façade
     </div>
     
-    <h1 class="hero-title">Philharmonie<br><span class="text-4xl md:text-6xl font-light text-gray-300 -webkit-text-fill-color-initial">Le Bâtiment</span></h1>
+    <h1 class="hero-title">Philharmonie<br><span class="font-light text-gray-300 -webkit-text-fill-color-initial">Le Bâtiment</span></h1>
     
     <div class="bird-layer" id="birdLayer"></div>
   </header>
 
-  <section class="max-w-6xl mx-auto px-6 py-20">
-    <div class="mb-10 text-center">
-      <h2 class="text-3xl font-bold text-white mb-4">Immersion Architecturale 3D</h2>
-      <p class="text-gray-400 max-w-2xl mx-auto">Explorez le modèle 3D interactif du bâtiment. Assurez-vous d'être sur GitHub Pages pour que le modèle s'affiche correctement.</p>
+  <section class="w-full max-w-7xl mx-auto px-4 md:px-8 py-16">
+    <div class="mb-8 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <h2 class="text-2xl md:text-4xl font-bold text-white mb-2">Immersion 3D</h2>
+        <p class="text-gray-400 text-sm md:text-base max-w-xl">
+          Tournez à 360°, zoomez à l'intérieur. <br class="hidden md:block">
+          <span class="text-yellow-500 font-semibold">PC :</span> Clic droit pour déplacer la caméra.<br class="hidden md:block">
+          <span class="text-yellow-500 font-semibold">Mobile :</span> 2 doigts pour déplacer la caméra.
+        </p>
+      </div>
     </div>
 
-    <div class="glass-panel p-2 shadow-2xl relative">
+    <div class="glass-panel p-2 shadow-2xl relative w-full">
+      <!-- 
+        Optimisations 3D :
+        - bounds="tight" : recadre le modèle sans "dézoom" abusif.
+        - camera-orbit : défini un zoom initial plus rapproché.
+        - min/max-camera-orbit : supprime les restrictions d'angle (on peut aller en dessous).
+      -->
       <model-viewer 
         src="philharmonie.glb" 
-        alt="Modèle 3D de la Philharmonie de Paris" 
+        alt="Modèle 3D complet de la Philharmonie de Paris" 
         camera-controls 
         auto-rotate 
-        rotation-per-second="30deg"
-        shadow-intensity="1.5" 
-        exposure="1.2"
+        rotation-per-second="20deg"
+        bounds="tight"
+        camera-orbit="-30deg 60deg 75%"
+        min-camera-orbit="-infinity -infinity auto"
+        max-camera-orbit="infinity infinity auto"
+        min-field-of-view="10deg"
+        shadow-intensity="1.2" 
+        exposure="1.1"
         environment-image="neutral"
-        style="width: 100%; height: 700px; border-radius: 0.75rem; background-color: #0d0d12;">
+        interaction-prompt="always"
+        class="w-full h-[60vh] md:h-[80vh] rounded-xl bg-[#0d0d12]">
         
         <div slot="poster" class="absolute inset-0 flex items-center justify-center bg-[#0d0d12] rounded-xl text-gray-400 flex-col gap-4">
           <svg class="w-12 h-12 animate-spin text-yellow-500" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-          <p>Chargement du modèle géant...</p>
+          <p class="text-sm md:text-base px-4 text-center">Génération de la structure spatiale...</p>
         </div>
       </model-viewer>
     </div>
   </section>
 
   <script>
-    // --- 1. MOTEUR AUDIO ---
+    // --- 1. MOTEUR AUDIO (Compatible Mobile & PC) ---
     let audioCtx = null;
 
     function initAudio() {
@@ -157,68 +182,117 @@
     }
 
     document.addEventListener('click', initAudio, { once: true });
+    document.addEventListener('touchstart', initAudio, { once: true });
 
-    // --- 2. SCATTERING DES 8 OISEAUX EXACTS ---
+    // --- 2. IMPORTATION ET DÉCOUPAGE DYNAMIQUE DU SVG EXTERNE ---
     const birdLayer = document.getElementById('birdLayer');
-    
-    // Les 8 formes distinctes extraites du document de calepinage
-    const birdPaths = [
-      "M 35 15 L 60 20 L 55 50 L 35 80 L 20 50 L 45 40 Z", 
-      "M 5 50 L 45 60 L 55 40 L 40 10 Z",
-      "M 55 10 L 30 70 L 40 95 L 65 95 L 60 70 L 75 50 Z",
-      "M 20 45 L 45 20 L 75 30 L 60 50 L 75 75 L 30 80 Z",
-      "M 30 40 L 55 15 L 80 10 L 65 40 L 85 55 L 40 70 Z",
-      "M 30 85 L 60 40 L 50 30 L 90 15 L 85 45 L 60 55 L 75 75 Z",
-      "M 30 10 L 45 35 L 75 20 L 85 40 L 65 55 L 60 85 L 50 65 L 40 85 Z",
-      "M 25 95 L 45 50 L 35 40 L 65 20 L 95 30 L 85 60 L 55 65 Z"
-    ];
-    
     const shades = ['#d1d5db', '#9ca3af', '#6b7280', '#4b5563', '#e5e7eb'];
 
-    for (let i = 0; i < 50; i++) {
-      let x, y;
-      let validPosition = false;
+    async function loadAndScatterBirds() {
+      // Conteneur caché pour calculer la taille réelle de chaque oiseau
+      const hiddenDiv = document.createElement('div');
+      hiddenDiv.style.visibility = 'hidden';
+      hiddenDiv.style.position = 'absolute';
+      hiddenDiv.style.width = '0';
+      hiddenDiv.style.height = '0';
+      hiddenDiv.style.overflow = 'hidden';
+      document.body.appendChild(hiddenDiv);
 
-      while (!validPosition) {
-        x = Math.random() * 90 + 5;
-        y = Math.random() * 90 + 5;
+      try {
+        // Appelle le fichier SVG exact du dossier GitHub
+        const response = await fetch('PDP-3-AJN-DET-000-TZ-204-0401-0.svg');
+        if (!response.ok) throw new Error("Fichier SVG non trouvé");
         
-        if (!(x > 25 && x < 75 && y > 30 && y < 70)) {
-          validPosition = true;
+        const svgText = await response.text();
+        hiddenDiv.innerHTML = svgText;
+        
+        const originalSvg = hiddenDiv.querySelector('svg');
+        if (!originalSvg) throw new Error("SVG invalide");
+
+        // Récupère toutes les formes (paths et polygones) du fichier de calepinage
+        const rawShapes = Array.from(originalSvg.querySelectorAll('path, polygon'));
+        
+        // Extrait les formes et calcule leur Bounding Box pour bien les centrer
+        const shapesData = rawShapes.map(shape => {
+          const bbox = shape.getBBox();
+          if (bbox.width === 0 || bbox.height === 0) return null;
+          
+          return {
+            node: shape.cloneNode(true),
+            // On recadre la vue de l'oiseau exactement sur sa propre taille (plus de marges invisibles)
+            viewBox: `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`
+          };
+        }).filter(data => data !== null);
+
+        if (shapesData.length === 0) throw new Error("Aucune forme valide trouvée");
+
+        // Génère 50 oiseaux piochés dans le fichier SVG
+        for (let i = 0; i < 50; i++) {
+          let x, y;
+          let validPosition = false;
+
+          // Éviter le centre du texte
+          while (!validPosition) {
+            x = Math.random() * 90 + 5;
+            y = Math.random() * 90 + 5;
+            if (!(x > 20 && x < 80 && y > 30 && y < 70)) {
+              validPosition = true;
+            }
+          }
+
+          const rotation = Math.random() * 360;
+          const scale = 0.5 + Math.random() * 0.7;
+          const shade = shades[Math.floor(Math.random() * shades.length)];
+          const shapeRef = shapesData[Math.floor(Math.random() * shapesData.length)];
+          
+          const bird = document.createElement('div');
+          bird.className = 'bird-item';
+          bird.style.left = `${x}%`;
+          bird.style.top = `${y}%`;
+          bird.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+          bird.dataset.origTransform = `rotate(${rotation}deg) scale(${scale})`;
+
+          // On applique la forme colorée avec l'ombre
+          const clonedNode = shapeRef.node.cloneNode(true);
+          clonedNode.setAttribute('fill', shade);
+          clonedNode.setAttribute('stroke', 'rgba(255,255,255,0.2)');
+          clonedNode.setAttribute('stroke-width', '1.5');
+          clonedNode.setAttribute('stroke-linejoin', 'round');
+
+          bird.innerHTML = `
+            <svg viewBox="${shapeRef.viewBox}" width="100%" height="100%" style="overflow: visible;">
+              ${clonedNode.outerHTML}
+            </svg>
+          `;
+
+          // Souris PC
+          bird.addEventListener('mouseenter', () => playNote(notes[i]));
+          bird.addEventListener('mouseleave', () => bird.style.transform = bird.dataset.origTransform);
+          
+          // Tactile Mobile
+          bird.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Évite le scroll quand on joue avec
+            playNote(notes[i]);
+            bird.style.transform = `scale(${scale * 1.6}) rotate(${rotation + 10}deg)`;
+            bird.style.zIndex = 50;
+          });
+          bird.addEventListener('touchend', () => {
+            bird.style.transform = bird.dataset.origTransform;
+            bird.style.zIndex = 5;
+          });
+
+          birdLayer.appendChild(bird);
         }
+      } catch (error) {
+        console.error("Erreur avec le SVG externe :", error);
+        // Si le fichier plante, ne fait rien (garde le fond étoilé vide) pour éviter de polluer la page.
+      } finally {
+        hiddenDiv.remove(); // Nettoyage
       }
-
-      const rotation = Math.random() * 360;
-      const scale = 0.4 + Math.random() * 0.5;
-      const shade = shades[Math.floor(Math.random() * shades.length)];
-      
-      // Sélection aléatoire d'une des 8 formes
-      const randomPath = birdPaths[Math.floor(Math.random() * birdPaths.length)];
-      
-      const bird = document.createElement('div');
-      bird.className = 'bird-item';
-      bird.style.left = `${x}%`;
-      bird.style.top = `${y}%`;
-      bird.style.transform = `rotate(${rotation}deg) scale(${scale})`;
-      
-      bird.dataset.origTransform = `rotate(${rotation}deg) scale(${scale})`;
-
-      bird.innerHTML = `
-        <svg viewBox="0 0 100 100" width="100%" height="100%" style="overflow: visible;">
-          <path d="${randomPath}" fill="${shade}" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linejoin="round" />
-        </svg>
-      `;
-
-      bird.addEventListener('mouseenter', () => {
-        playNote(notes[i]);
-      });
-
-      bird.addEventListener('mouseleave', () => {
-        bird.style.transform = bird.dataset.origTransform;
-      });
-
-      birdLayer.appendChild(bird);
     }
+
+    // Lancement de la génération des oiseaux au chargement
+    window.addEventListener('DOMContentLoaded', loadAndScatterBirds);
   </script>
 </body>
 </html>
