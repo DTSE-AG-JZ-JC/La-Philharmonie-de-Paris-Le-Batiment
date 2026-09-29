@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Philharmonie de Paris : Bâtiment, Climat & Performance Énergétique</title>
+  <title>Philharmonie de Paris — Bâtiment, Climat & Performance Énergétique</title>
 
   <!-- Tailwind CSS & Chart.js -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -14,15 +14,15 @@
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
     body { font-family: 'Montserrat', sans-serif; color: #f4f4f5; overflow-x: hidden; }
 
-    /* Hero & FX */
+    /* Hero & Décorations Oiseaux */
     .hero-container {
       position: relative;
-      min-height: 85vh;
+      min-height: 75vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at center, #1a1a26 0%, #0a0a0c 100%);
+      background: radial-gradient(circle at center, #181824 0%, #0a0a0c 100%);
       overflow: hidden;
     }
 
@@ -32,7 +32,6 @@
       text-align: center;
       line-height: 1.1;
       z-index: 10;
-      pointer-events: none;
       background: linear-gradient(135deg, #ffffff 0%, #d4af37 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -42,67 +41,43 @@
     .bird-layer {
       position: absolute;
       inset: 0;
-      z-index: 15;
+      z-index: 5;
       pointer-events: none;
     }
 
-    .bird-item {
+    /* Animation douce pour les oiseaux */
+    .bird-svg {
       position: absolute;
-      width: clamp(55px, 7vw, 110px);
-      height: clamp(55px, 7vw, 110px);
-      cursor: pointer;
-      pointer-events: auto;
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.7));
+      width: clamp(35px, 4vw, 60px);
+      height: clamp(35px, 4vw, 60px);
+      opacity: 0.75;
+      transition: transform 0.3s ease, opacity 0.3s ease, fill 0.3s ease;
+      animation: floatBird 6s infinite ease-in-out alternate;
     }
 
-    .bird-item:hover {
-      transform: scale(1.7) rotate(12deg) !important;
-      filter: drop-shadow(0 0 22px rgba(212, 175, 55, 0.95)) brightness(1.5);
-      z-index: 50;
+    .bird-svg:hover {
+      opacity: 1;
+      transform: scale(1.25) !important;
     }
 
-    .bird-item svg path, .bird-item svg polygon, .bird-item svg polyline {
-      transition: fill 0.3s ease, stroke 0.3s ease;
-    }
-
-    .bird-item:hover svg path, 
-    .bird-item:hover svg polygon, 
-    .bird-item:hover svg polyline {
-      fill: #d4af37 !important;
-      stroke: #ffffff !important;
+    @keyframes floatBird {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-12px); }
     }
 
     .glass-panel {
-      background: rgba(18, 18, 24, 0.7);
+      background: rgba(18, 18, 24, 0.75);
       backdrop-filter: blur(14px);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 1.25rem;
     }
 
-    /* Transition fondu croisé chantier / design */
-    .fade-media-container {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    .fade-media {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: opacity 1.5s ease-in-out;
-    }
-
-    .fade-media-container:hover .fade-layer-top {
-      opacity: 0;
-    }
-
     model-viewer {
+      width: 100%;
+      height: 100%;
       --poster-color: transparent;
+      background-color: rgba(0, 0, 0, 0.3);
+      border-radius: 1rem;
     }
   </style>
 </head>
@@ -110,29 +85,28 @@
 
   <!-- HERO SECTION -->
   <header class="hero-container" id="hero">
-    
-    <!-- Tag interactif -->
-    <div class="absolute top-6 z-20 px-5 py-2 rounded-full border border-yellow-500/40 bg-yellow-500/10 text-yellow-400 text-xs md:text-sm font-semibold flex items-center gap-2 backdrop-blur-md shadow-lg">
-      <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-      Survolez les 8 formes d'oiseaux de façade de Jean Nouvel • Cliquez pour découvrir les lieux
+    <!-- Tag informatif -->
+    <div class="absolute top-6 z-20 px-5 py-2 rounded-full border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 text-xs md:text-sm font-semibold flex items-center gap-2 backdrop-blur-md shadow-lg">
+      <span class="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
+      Motifs décoratifs : Les 8 formes d'oiseaux de façade de Jean Nouvel
     </div>
 
-    <!-- Titre -->
-    <div class="z-10 text-center px-4 my-auto">
+    <!-- Titre Principal -->
+    <div class="z-10 text-center px-4 my-auto space-y-3">
       <h1 class="hero-title">Philharmonie de Paris</h1>
-      <p class="text-xl md:text-2xl font-light text-zinc-300 mt-2 tracking-wide">
+      <p class="text-lg md:text-2xl font-light text-zinc-300 tracking-wide">
         Anatomie, Climat & Performance Énergétique
       </p>
     </div>
 
-    <!-- Nuage d’oiseaux interactifs -->
+    <!-- Nuage décoratif des 8 oiseaux géométriques -->
     <div class="bird-layer" id="birdLayer"></div>
   </header>
 
-  <main class="w-full max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-28">
+  <main class="w-full max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-24">
 
-    <!-- SECTION 1 : CHIFFRES CLÉS, MEDIAS & EMBED 2.5D MAPS -->
-    <section class="space-y-12">
+    <!-- SECTION 1 : CHIFFRES CLÉS & MODÈLE 3D / MAPS -->
+    <section class="space-y-10">
       <div class="border-l-4 border-yellow-500 pl-4">
         <h2 class="text-3xl md:text-4xl font-extrabold text-white">1. Introduction & Chiffres Clés</h2>
         <p class="text-zinc-400 text-sm md:text-base mt-1">L'édifice d'exception conçu par les Ateliers Jean Nouvel.</p>
@@ -140,61 +114,69 @@
 
       <!-- Cartes Chiffres Clés -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="glass-panel p-5 text-center hover:border-yellow-500/50 transition">
+        <div class="glass-panel p-5 text-center hover:border-yellow-500/40 transition">
           <div class="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Surface Utile / Brute</div>
           <div class="text-2xl md:text-3xl font-bold text-yellow-400 mt-1">42k / 90k m²</div>
           <div class="text-xs text-zinc-500 mt-1">Surface utile 42 000 m² • Brute 85k-90k m²</div>
         </div>
-        <div class="glass-panel p-5 text-center hover:border-yellow-500/50 transition">
+        <div class="glass-panel p-5 text-center hover:border-yellow-500/40 transition">
           <div class="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Hauteur & Belvédère</div>
           <div class="text-2xl md:text-3xl font-bold text-yellow-400 mt-1">52m / 37m</div>
-          <div class="text-xs text-zinc-500 mt-1">Hauteur totale 52m • Belvédère panoramique à 37m</div>
+          <div class="text-xs text-zinc-500 mt-1">Hauteur totale 52m • Belvédère à 37m</div>
         </div>
-        <div class="glass-panel p-5 text-center hover:border-yellow-500/50 transition">
+        <div class="glass-panel p-5 text-center hover:border-yellow-500/40 transition">
           <div class="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Grande Salle Pierre Boulez</div>
           <div class="text-2xl md:text-3xl font-bold text-yellow-400 mt-1">30 000 m³</div>
-          <div class="text-xs text-zinc-500 mt-1">2400 assises / 3500 assis+debout (fosse)</div>
+          <div class="text-xs text-zinc-500 mt-1">2400 assises / 3500 (assis + fosse)</div>
         </div>
-        <div class="glass-panel p-5 text-center hover:border-yellow-500/50 transition">
+        <div class="glass-panel p-5 text-center hover:border-yellow-500/40 transition">
           <div class="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Architecture</div>
           <div class="text-xl md:text-2xl font-bold text-white mt-1">Ateliers Jean Nouvel</div>
-          <div class="text-xs text-zinc-500 mt-1">Béton armé, structures acier & enveloppe aluminium</div>
+          <div class="text-xs text-zinc-500 mt-1">Béton, acier & enveloppe aluminium</div>
         </div>
       </div>
 
-      <!-- Duo Media : Fondu Chantier / Design Video + Google Maps 2.5D Street View -->
+      <!-- Modèle 3D à gauche + Google Maps 2.5D à droite -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         
-        <!-- Bloc Fondu Chantier -> Vidéo/Design -->
-        <div class="glass-panel overflow-hidden relative h-[450px] group shadow-2xl">
-          <div class="absolute top-4 left-4 z-20 bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10 text-xs font-medium text-yellow-400">
-            📷 Phase Chantier ➔ Architecture Finale (Survolez pour comparer)
+        <!-- Bloc Modèle 3D (À gauche) -->
+        <div class="glass-panel p-4 flex flex-col h-[450px] shadow-2xl relative">
+          <div class="flex items-center justify-between mb-3 px-2">
+            <span class="text-xs font-semibold text-yellow-400 flex items-center gap-2">
+              🧊 Modèle 3D Interactif du Bâtiment
+            </span>
+            <span class="text-[10px] text-zinc-400">Pincez / Tournez pour naviguer</span>
           </div>
-          <div class="fade-media-container">
-            <!-- Vidéo/Rendu du bâtiment (Dessous) -->
-            <img src="https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=1200&q=80" alt="Philharmonie Design" class="fade-media">
-            <!-- Image Chantier (Dessous alternative / Overlay) -->
-            <img src="https://images.unsplash.com/photo-1541888946425-d0fbb186a5b3?auto=format&fit=crop&w=1200&q=80" alt="Phase Chantier Philharmonie" class="fade-media fade-layer-top opacity-100">
-          </div>
-          <div class="absolute bottom-4 left-4 right-4 z-20 bg-gradient-to-t from-black/90 to-transparent p-4 rounded-xl">
-            <p class="text-xs text-zinc-300">Du chantier colossal de la Villette jusqu'à la façade recouverte de 340 000 oiseaux d'aluminium gravés.</p>
+          <div class="flex-1 overflow-hidden rounded-xl">
+            <model-viewer 
+              src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
+              alt="Modèle 3D Philharmonie" 
+              auto-rotate 
+              camera-controls 
+              shadow-intensity="1">
+            </model-viewer>
           </div>
         </div>
 
-        <!-- Google Maps 2.5D Street View Embed -->
-        <div class="glass-panel overflow-hidden relative h-[450px] shadow-2xl">
-          <div class="absolute top-4 left-4 z-20 bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10 text-xs font-medium text-yellow-400">
-            🗺️ Implantation 2.5D & Street View Interactive
+        <!-- Google Maps 2.5D / Street View Embed (À droite) -->
+        <div class="glass-panel p-4 flex flex-col h-[450px] shadow-2xl relative">
+          <div class="flex items-center justify-between mb-3 px-2">
+            <span class="text-xs font-semibold text-yellow-400 flex items-center gap-2">
+              🗺️ Vue 2.5D & Implantation Street View
+            </span>
+            <span class="text-[10px] text-zinc-400">Parc de la Villette, Paris 19e</span>
           </div>
-          <iframe 
-            src="https://www.google.com/maps/embed?pb=!4v1700000000000!6m8!1m7!1sGA4yqvXG7ix0gN5TagDxNw!2m2!1d48.8917101!2d2.3942711!3f26.59!4f0deg!5f0.7820865974627469" 
-            width="100%" 
-            height="100%" 
-            style="border:0;" 
-            allowfullscreen="" 
-            loading="lazy" 
-            referrerpolicy="no-referrer-when-downgrade">
-          </iframe>
+          <div class="flex-1 overflow-hidden rounded-xl">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!4v1700000000000!6m8!1m7!1sGA4yqvXG7ix0gN5TagDxNw!2m2!1d48.8917101!2d2.3942711!3f26.59!4f0deg!5f0.7820865974627469" 
+              width="100%" 
+              height="100%" 
+              style="border:0;" 
+              allowfullscreen="" 
+              loading="lazy" 
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
         </div>
 
       </div>
@@ -210,79 +192,78 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         
-        <!-- Carte Réseaux Urbains -->
+        <!-- Réseaux Urbains -->
         <div class="glass-panel p-6 space-y-4">
           <div class="flex items-center gap-3">
-            <div class="p-3 bg-yellow-500/10 rounded-xl text-yellow-400">
+            <div class="p-3 bg-yellow-500/10 rounded-xl text-yellow-400 text-xl">
               ⚡
             </div>
-            <h3 class="text-xl font-bold text-white">Raccordements Réseaux Urbains</h3>
+            <h3 class="text-xl font-bold text-white">Les Réseaux Urbains</h3>
           </div>
           <p class="text-sm text-zinc-300 leading-relaxed">
-            Pour répondre aux besoins thermiques sans chaudières ni groupes frigorifiques autonomes volumineux en toiture, la Philharmonie s'appuie directement sur les grands réseaux urbains de la Ville de Paris :
+            Afin d'assurer le confort thermique et la climatisation du bâtiment sans utiliser de groupes frigorifiques autonomes volumineux, la Philharmonie est directement raccordée aux réseaux urbains parisiens :
           </p>
           <ul class="space-y-3 text-xs md:text-sm text-zinc-400">
             <li class="flex items-start gap-2">
               <span class="text-red-400 font-bold">●</span>
-              <span><strong class="text-zinc-200">CPCU (Chauffage Urbain) :</strong> Fourniture d'eau chaude sous pression pour la vapeur de chauffage et l'humidification contrôlée des centrales de traitement d'air (CTA).</span>
+              <span><strong class="text-zinc-200">CPCU (Chauffage Urbain) :</strong> Alimentation en vapeur chaude pour le chauffage des espaces et l'humidification contrôlée de l'air.</span>
             </li>
             <li class="flex items-start gap-2">
               <span class="text-blue-400 font-bold">●</span>
-              <span><strong class="text-zinc-200">Fraîcheur de Paris (Froid Urbain) :</strong> Eau glacée acheminée par le sous-sol pour le rafraîchissement continu de la Grande Salle, des studios et des locaux serveurs.</span>
+              <span><strong class="text-zinc-200">Fraîcheur de Paris (Froid Urbain) :</strong> Distribution d'eau glacée pour le rafraîchissement des salles de concert, des studios et des locaux techniques.</span>
             </li>
             <li class="flex items-start gap-2">
               <span class="text-emerald-400 font-bold">●</span>
-              <span><strong class="text-zinc-200">Circulation hydraulique interne :</strong> Réseau secondaire hautement maillé avec vannes motorisées à régulation millimétrique pour chaque zone thermique.</span>
+              <span><strong class="text-zinc-200">Circulation d'eau :</strong> Un réseau hydraulique interne complexe garantissant une distribution précise de la chaleur et du froid zone par zone.</span>
             </li>
           </ul>
         </div>
 
-        <!-- Dashboard Supervision GTB (Mockup) -->
+        <!-- Supervision GTB -->
         <div class="glass-panel p-6 space-y-4">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400">
+              <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 text-xl">
                 🖥️
               </div>
-              <h3 class="text-xl font-bold text-white">Cœur Électrique & GTB (Supervision)</h3>
+              <h3 class="text-xl font-bold text-white">Cœur Électrique & Supervision GTB</h3>
             </div>
-            <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-full border border-emerald-500/30 font-mono">GTB ACTIVE</span>
+            <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-full border border-emerald-500/30 font-mono">GTB ACTIF</span>
           </div>
 
-          <!-- Console GTB de simulation -->
           <div class="bg-black/60 rounded-xl p-4 border border-white/5 font-mono text-xs space-y-3">
             <div class="flex justify-between border-b border-zinc-800 pb-2 text-zinc-400">
-              <span>ZONE MONITORÉE</span>
+              <span>ZONE</span>
               <span>TEMP (°C)</span>
               <span>HYGRO (%)</span>
               <span>CTA DEBIT</span>
             </div>
             <div class="flex justify-between items-center text-zinc-200">
-              <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Grande Salle Pierre Boulez</span>
+              <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Grande Salle</span>
               <span>20.5 °C</span>
               <span>51 %</span>
               <span class="text-yellow-400">12 500 m³/h</span>
             </div>
             <div class="flex justify-between items-center text-zinc-200">
-              <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Musée & Réserves Instruments</span>
+              <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Réserves & Musée</span>
               <span>19.8 °C</span>
               <span>50 %</span>
               <span class="text-yellow-400">4 200 m³/h</span>
             </div>
             <div class="flex justify-between items-center text-zinc-200">
-              <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Grill Technique & HT-BT</span>
+              <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Locaux Techniques</span>
               <span>21.2 °C</span>
               <span>44 %</span>
               <span class="text-yellow-400">8 100 m³/h</span>
             </div>
             <div class="flex justify-between items-center text-zinc-200">
-              <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Bureaux & Salles Répétition</span>
+              <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Bureaux & Répétition</span>
               <span>20.1 °C</span>
               <span>48 %</span>
               <span class="text-yellow-400">6 000 m³/h</span>
             </div>
           </div>
-          <p class="text-xs text-zinc-400 italic">Supervision centralisée modulant le débit d'air et la puissance électrique selon les planning exacts de répétitions et de représentations.</p>
+          <p class="text-xs text-zinc-400 italic">Interface de gestion technique centralisée contrôlant les paramètres environnementaux en temps réel.</p>
         </div>
 
       </div>
@@ -293,75 +274,65 @@
     <section class="space-y-8">
       <div class="border-l-4 border-yellow-500 pl-4">
         <h2 class="text-3xl md:text-4xl font-extrabold text-white">3. Le Maintien du Climat : Une Contrainte Artistique</h2>
-        <p class="text-zinc-400 text-sm md:text-base mt-1">Protéger le bois, les cordes et les mécanismes précieux des instruments d'exception.</p>
+        <p class="text-zinc-400 text-sm md:text-base mt-1">Protéger le bois, les cordes et les mécanismes précieux des instruments.</p>
       </div>
 
-      <div class="glass-panel p-6 md:p-8 space-y-6">
+      <div class="glass-panel p-6 md:p-8 space-y-8">
+        
+        <!-- Textes explicatifs généraux sans marques -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="p-4 bg-white/5 rounded-xl border border-white/5 space-y-2">
             <h4 class="text-yellow-400 font-bold text-base">🎻 Hygrométrie de Précision</h4>
             <p class="text-xs text-zinc-300 leading-relaxed">
-              Tolérance de variation d'humidité relative inférieure à **±5%** dans les réserves et au Musée de la musique pour éviter le fente du bois des violons et pianos anciens.
+              Tolérance de variation d'humidité strictement contrôlée pour éviter le dessèchement ou la déformation du bois des instruments patrimoniaux et de collection.
             </p>
           </div>
           <div class="p-4 bg-white/5 rounded-xl border border-white/5 space-y-2">
             <h4 class="text-yellow-400 font-bold text-base">🎹 Pianos de Concert</h4>
             <p class="text-xs text-zinc-300 leading-relaxed">
-              Les pianos Steinway & Sons et Fazioli requièrent une stabilité thermique absolue à **20°C / 50% HR** avant le passage sur la scène Pierre Boulez.
+              Les pianos de grand concert conservés en réserve nécessitent une stabilité de température et d'hygrométrie constante avant leur installation sur scène.
             </p>
           </div>
           <div class="p-4 bg-white/5 rounded-xl border border-white/5 space-y-2">
-            <h4 class="text-yellow-400 font-bold text-base">🎺 Orgue Monumental Rieger</h4>
+            <h4 class="text-yellow-400 font-bold text-base">🎼 L'Orgue Monumental</h4>
             <p class="text-xs text-zinc-300 leading-relaxed">
-              L'orgue géant intégré dans la paroi de la grande salle est composé de 6 055 tuyaux thermosensibles dont l'accordage bouge à la moindre fluctuation thermique.
+              L'orgue majestueux intégré à la grande salle est composé de milliers de tuyaux extrêmement sensibles aux écarts thermiques, influençant directement la justesse de l'accordage.
             </p>
           </div>
         </div>
 
-        <!-- Galerie photos / capteurs -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
-          <div class="relative rounded-xl overflow-hidden group h-40">
-            <img src="https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" alt="Piano de concert">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
-              <span class="text-xs font-semibold text-white">Piano Steinway & Sons</span>
-            </div>
-          </div>
-          <div class="relative rounded-xl overflow-hidden group h-40">
-            <img src="https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" alt="Orgue Rieger Grande Salle">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
-              <span class="text-xs font-semibold text-white">Orgue Rieger (6055 tuyaux)</span>
-            </div>
-          </div>
-          <div class="relative rounded-xl overflow-hidden group h-40">
-            <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" alt="Capteurs IoT Climatiques">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
-              <span class="text-xs font-semibold text-white">Capteurs IoT Hygrométrie</span>
-            </div>
-          </div>
-          <div class="relative rounded-xl overflow-hidden group h-40">
-            <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" alt="Réserve d'instruments">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
-              <span class="text-xs font-semibold text-white">Réserves du Musée</span>
+        <!-- Seule photo unique : pianos en réserve -->
+        <div class="relative rounded-2xl overflow-hidden h-80 shadow-2xl border border-white/10 group">
+          <img 
+            src="https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?auto=format&fit=crop&w=1200&q=80" 
+            alt="Pianos de concert en réserve régulée" 
+            class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+          >
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex items-end p-6">
+            <div>
+              <span class="text-xs text-yellow-400 font-semibold tracking-wider uppercase">Réserves & Équipements</span>
+              <h3 class="text-xl font-bold text-white">Espace de stockage régulé des pianos de concert</h3>
             </div>
           </div>
         </div>
+
       </div>
     </section>
 
 
-    <!-- SECTION 4 : BILAN ÉNERGÉTIQUE (2018 - 2026) & PLAN D'ACTION -->
+    <!-- SECTION 4 : BILAN ÉNERGÉTIQUE & PLAN D'ACTION -->
     <section class="space-y-10">
       <div class="border-l-4 border-yellow-500 pl-4">
         <h2 class="text-3xl md:text-4xl font-extrabold text-white">4. Bilan Énergétique : La Chasse au Gaspillage (2023 - 2025)</h2>
-        <p class="text-zinc-400 text-sm md:text-base mt-1">Chute spectaculaire des consommations électriques et plan de sobriété.</p>
+        <p class="text-zinc-400 text-sm md:text-base mt-1">Évolution des consommations et actions d'efficacité énergétique.</p>
       </div>
 
-      <!-- Graphique Électricité / CPCU / Froid Urbain -->
+      <!-- Graphique Interactif Chart.js -->
       <div class="glass-panel p-6 md:p-8 space-y-6 shadow-2xl">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h3 class="text-xl font-bold text-white">Historique des Consommations (MWh)</h3>
-            <p class="text-xs text-zinc-400">Comparatif de 2018 à Août 2026</p>
+            <p class="text-xs text-zinc-400">Données de 2018 à Août 2026</p>
           </div>
           <div class="flex flex-wrap gap-2 text-xs">
             <span class="px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full border border-amber-500/30">⚡ Électricité</span>
@@ -370,7 +341,6 @@
           </div>
         </div>
 
-        <!-- Canvas Chart.js -->
         <div class="relative h-[380px] w-full">
           <canvas id="energyChart"></canvas>
         </div>
@@ -378,32 +348,32 @@
         <div class="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-300 text-xs md:text-sm flex items-center gap-3">
           <span class="text-xl">📉</span>
           <div>
-            <strong>Constat Majeur 2023-2025 :</strong> Passage d'environ <strong>5 500 MWh/an</strong> d'électricité à moins de <strong>2 800 MWh/an</strong>, soit une réduction de près de <strong>50%</strong> de la consommation électrique globale du bâtiment grâce à l'optimisation GTB et au relamping LED.
+            <strong>Synthèse de sobriété :</strong> Chute marquée des consommations électriques, passant de plus de <strong>5 500 MWh/an</strong> à moins de <strong>2 800 MWh/an</strong> entre 2023 et 2025 grâce aux mesures d'optimisation engagées.
           </div>
         </div>
       </div>
 
-      <!-- Le Plan d'Action -->
+      <!-- Plan d'Action -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="glass-panel p-6 space-y-3">
-          <div class="text-yellow-400 text-2xl font-bold">01. Relamping LED Massif</div>
+          <div class="text-yellow-400 text-xl font-bold">01. Relamping LED Massif</div>
           <p class="text-xs text-zinc-400">Réalisé fin 2025</p>
           <p class="text-xs text-zinc-300 leading-relaxed">
-            Remplacement systématique des milliers de projecteurs halogènes scéniques et de l'éclairage architectural de la façade par des modules LED haute efficacité.
+            Passage intégral en éclairage LED pour les projecteurs scéniques, les espaces publics et l'illumination architecturale.
           </p>
         </div>
         <div class="glass-panel p-6 space-y-3">
-          <div class="text-yellow-400 text-2xl font-bold">02. Détecteurs de Présence</div>
+          <div class="text-yellow-400 text-xl font-bold">02. Détecteurs de Présence</div>
           <p class="text-xs text-zinc-400">Déploiement 2025 - 2026</p>
           <p class="text-xs text-zinc-300 leading-relaxed">
-            Installation de capteurs intelligents dans l'ensemble des zones de coulisses, bureaux, locaux techniques et circulations secondaires.
+            Installation de capteurs intelligents dans l'ensemble des zones d'occupation intermittente et circulations techniques.
           </p>
         </div>
         <div class="glass-panel p-6 space-y-3">
-          <div class="text-yellow-400 text-2xl font-bold">03. Optimisation Horaires GTB</div>
+          <div class="text-yellow-400 text-xl font-bold">03. Optimisation GTB</div>
           <p class="text-xs text-zinc-400">Programmation Stricte</p>
           <p class="text-xs text-zinc-300 leading-relaxed">
-            Ajustement automatique du débit des CTA (Centrales de Traitement d'Air) et de l'éclairage calé à la minute près sur le planning réel d'occupation des orchestres.
+            Ajustement fin du fonctionnement des centrales de traitement d'air (CTA) et des éclairages selon l'occupation réelle des salles.
           </p>
         </div>
       </div>
@@ -414,70 +384,34 @@
     <section class="space-y-8">
       <div class="border-l-4 border-yellow-500 pl-4">
         <h2 class="text-3xl md:text-4xl font-extrabold text-white">5. Cap vers l'Avenir : L'Énergie de Demain</h2>
-        <p class="text-zinc-400 text-sm md:text-base mt-1">Autoconsommation et transition écologique durable.</p>
+        <p class="text-zinc-400 text-sm md:text-base mt-1">Smart grid interne et projets d'autoconsommation.</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- Projet Solaire -->
         <div class="glass-panel p-6 space-y-4 border-l-2 border-yellow-500">
-          <h3 class="text-xl font-bold text-white flex items-center gap-2">☀️ Le Projet Photovoltaïque Solaire</h3>
+          <h3 class="text-xl font-bold text-white flex items-center gap-2">☀️ Le Projet Solaire Photovoltaïque</h3>
           <p class="text-xs md:text-sm text-zinc-300 leading-relaxed">
-            Une étude d'ingénierie est actuellement engagée pour équiper les surfaces exploitables en toiture de panneaux solaires photovoltaïques.
+            Étude en cours pour l'utilisation de panneaux solaires en toiture afin d'alimenter directement en autoconsommation le talon de consommation permanent du bâtiment.
           </p>
-          <div class="p-3 bg-black/40 rounded-lg text-xs text-yellow-300 font-mono">
-            ⚡ Objectif principal : Réduction directe du talon de consommation électrique permanent (serveurs, sécurité, maintien hygrométrique de base).
+        </div>
+
+        <!-- Raccordement Tableau Électrique & GTB -->
+        <div class="glass-panel p-6 space-y-4 border-l-2 border-emerald-500">
+          <h3 class="text-xl font-bold text-white flex items-center gap-2">⚡ Raccordement Intégral GTB & Tableau Électrique</h3>
+          <p class="text-xs md:text-sm text-zinc-300 leading-relaxed">
+            Tous les départs de notre tableau électrique principal ont été entièrement reliés à la GTB (Gestion Technique du Bâtiment) afin de permettre à l'avenir une mesure ultra-fine et une optimisation globale de chaque sous-circuit.
+          </p>
+          <div class="p-3 bg-black/40 rounded-lg text-xs text-emerald-300 font-mono">
+            ✓ Supervision sous-circuit par sous-circuit pour pousser la sobriété énergétique au niveau supérieur.
           </div>
         </div>
 
-        <div class="glass-panel p-6 space-y-4 border-l-2 border-emerald-500">
-          <h3 class="text-xl font-bold text-white flex items-center gap-2">🌱 Autres Pistes d'Éco-Optimisation</h3>
-          <ul class="space-y-2 text-xs md:text-sm text-zinc-300">
-            <li class="flex items-center gap-2">✓ Recovery de chaleur fatale sur les extracteurs d'air et baies serveurs.</li>
-            <li class="flex items-center gap-2">✓ Audits thermiques dynamiques réguliers avec caméras infrarouges sur l'enveloppe alu.</li>
-            <li class="flex items-center gap-2">✓ Gestion optimisée des apports solaires passifs selon l'exposition des baies vitrées.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-
-    <!-- SECTION 6 : IMMERSION LOCAUX TECHNIQUES (VISITE VIRTUELLE) -->
-    <section class="space-y-8">
-      <div class="border-l-4 border-yellow-500 pl-4">
-        <h2 class="text-3xl md:text-4xl font-extrabold text-white">6. Immersion dans les Locaux Techniques (Visite Virtuelle)</h2>
-        <p class="text-zinc-400 text-sm md:text-base mt-1">La face cachée de la Philharmonie : cliquez sur les zones pour ouvrir la bulle d'information.</p>
-      </div>
-
-      <!-- Grille de cartes / Bulles d'immersion -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="techSpotsGrid">
-        <!-- Généré par JS -->
       </div>
     </section>
 
   </main>
-
-  <!-- MODAL / BULLE D'INFORMATIONS DU LIEU TECHNIQUE -->
-  <div id="techModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
-    <div class="glass-panel max-w-lg w-full p-6 space-y-5 relative border border-yellow-500/40 shadow-2xl animate-fade-in">
-      <button onclick="closeModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-white text-2xl font-bold">&times;</button>
-      <div class="flex items-center gap-3">
-        <span id="modalIcon" class="text-3xl">🏛️</span>
-        <div>
-          <h3 id="modalTitle" class="text-xl font-bold text-yellow-400">Titre du Lieu</h3>
-          <span class="text-xs text-zinc-400 uppercase tracking-wider">Zone Technique Philharmonie</span>
-        </div>
-      </div>
-      <p id="modalDescription" class="text-sm text-zinc-300 leading-relaxed">
-        Description du lieu...
-      </p>
-      <div class="bg-black/40 p-3 rounded-lg border border-white/5 text-xs text-zinc-400 space-y-1 font-mono">
-        <div>• Consigne Climatique : <span id="modalClimate" class="text-white">20°C / 50% HR</span></div>
-        <div>• Équipement GTB : <span id="modalEquip" class="text-white">CTA Dédiée</span></div>
-      </div>
-      <button onclick="closeModal()" class="w-full py-2.5 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-xl text-sm transition">
-        Fermer la bulle d'immersion
-      </button>
-    </div>
-  </div>
 
 
   <!-- SCRIPT JS PRINCIPAL -->
@@ -535,173 +469,57 @@
       }
     });
 
-    // --- 2. LIEUX TECHNIQUES POUR VISITE VIRTUELLE ---
-    const techSpots = [
-      { id: 'boulez', title: 'La Salle Pierre Boulez', icon: '🎵', desc: 'Salle symphonique de 2400 places. Flux d’air pulsé à très faible vitesse sous les fauteuils pour préserver l’acoustique sans aucun bruit de soufflerie.', climate: '20.0°C ± 0.5°C / 50% HR', equip: '4 CTA de 30 000 m³/h' },
-      { id: 'studio', title: 'Le Studio d’Enregistrement', icon: '🎙️', desc: 'Espace de prise de son haute fidélité avec régie suspendue désolidarisée de la structure principale du bâtiment.', climate: '20.0°C / 48% HR', equip: 'Insonorisation acoustique 85dB' },
-      { id: 'conference', title: 'Salle de Conférence', icon: '🗣️', desc: 'Modularité d’accueil pour conférences et masterclasses, régie de gestion d’éclairage LED autonome.', climate: '21.0°C / 45% HR', equip: 'Régulation CO2 dynamique' },
-      { id: 'bureaux', title: 'Les Bureaux Administratifs', icon: '💼', desc: 'Zone tertiaire intégrée sous l’enveloppe d’aluminium avec détecteurs de présence et programmation GTB calée sur les heures ouvrées.', climate: '19.0°C en hiver', equip: 'Relamping LED 100%' },
-      { id: 'belvedere', title: 'Le Belvédère (37m)', icon: '🏙️', desc: 'Toit-terrasse accessible au public offrant une vue panoramique sur Paris. Intègre les points de captage d’air neuf du bâtiment.', climate: 'Aération naturelle', equip: 'Sondes météo & anémomètres GTB' },
-      { id: 'grill', title: 'Le Grill Technique', icon: '🏗️', desc: 'Plancher technique suspendu au-dessus de la grande salle permettant le mouvement des réflecteurs acoustiques et des projecteurs scéniques.', climate: '22.0°C', equip: 'Moteurs à fréquence variable' },
-      { id: 'htbt', title: 'Le Local HT-BT', icon: '⚡', desc: 'Transformateurs haute tension et TGBT assurant la distribution de secours et l’alimentation continue des équipements vitaux.', climate: 'Ventilation mécanique forcée', equip: 'Onduleurs & TGBT modulaires' },
-      { id: 'enfants', title: 'Philharmonie des Enfants', icon: '🎈', desc: 'Espace ludo-éducatif de 1000 m² dédié aux 4-10 ans avec installations sonores et mécaniques interactives.', climate: '21.0°C / 50% HR', equip: 'CTA dédiée basse consommation' }
-    ];
 
-    const techGrid = document.getElementById('techSpotsGrid');
-    techSpots.forEach(spot => {
-      const card = document.createElement('div');
-      card.className = 'glass-panel p-4 cursor-pointer hover:border-yellow-500/60 transition group text-center space-y-2';
-      card.onclick = () => openModal(spot);
-      card.innerHTML = `
-        <div class="text-3xl group-hover:scale-125 transition transform duration-300">${spot.icon}</div>
-        <div class="font-bold text-xs md:text-sm text-white group-hover:text-yellow-400">${spot.title}</div>
-        <div class="text-[10px] text-zinc-400">Cliquez pour inspecter</div>
-      `;
-      techGrid.appendChild(card);
-    });
-
-    function openModal(spot) {
-      document.getElementById('modalTitle').innerText = spot.title;
-      document.getElementById('modalIcon').innerText = spot.icon;
-      document.getElementById('modalDescription').innerText = spot.desc;
-      document.getElementById('modalClimate').innerText = spot.climate;
-      document.getElementById('modalEquip').innerText = spot.equip;
-      document.getElementById('techModal').classList.remove('hidden');
-    }
-
-    function closeModal() {
-      document.getElementById('techModal').classList.add('hidden');
-    }
-
-
-    // --- 3. MOTEUR AUDIO AUDIO-SYNTH ---
-    let audioCtx = null;
-    function initAudio() {
-      if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-      if (audioCtx.state === 'suspended') { audioCtx.resume(); }
-    }
-
-    const baseNotes = [130.81, 146.83, 164.81, 196.00, 220.00, 261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
-    function playNote(freq) {
-      initAudio();
-      if (!audioCtx) return;
-      const now = audioCtx.currentTime;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, now);
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.linearRampToValueAtTime(0.25, now + 0.04);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(now);
-      osc.stop(now + 1.3);
-    }
-
-    document.addEventListener('click', initAudio, { once: true });
-
-
-    // --- 4. RECONSTITUTION EXACTE DES 8 FORMES D'OISEAUX D'ORIGINE JEAN NOUVEL ---
-    // Les 8 tracés géométriques fidèles extraits du SVG PDP-3-AJN-DET-000-TZ-204-0401-0.svg
+    // --- 2. LES 8 FORMES ÉPURÉES ET EXACTES D'OISEAUX DE FAÇADE JEAN NOUVEL ---
     const official8Birds = [
-      { viewBox: "0 0 200 240", content: '<path d="M 40 195 L 110 20 L 155 42 L 110 210 L 80 290 L 0 150 Z" />' },
-      { viewBox: "0 0 250 280", content: '<path d="M 0 130 L 160 0 L 200 85 L 140 110 L 230 280 L 0 130 Z" />' },
-      { viewBox: "0 0 200 200", content: '<path d="M 120 0 C 160 20 180 60 160 100 L 125 180 L 0 175 C 50 110 80 40 120 0 Z" />' },
-      { viewBox: "0 0 220 220", content: '<path d="M 140 0 L 205 80 L 180 105 L 110 65 L 0 200 L 75 130 Z" />' },
-      { viewBox: "0 0 220 300", content: '<path d="M 140 0 L 180 110 L 150 150 L 0 300 L 70 220 L 130 170 L 200 210 Z" />' },
-      { viewBox: "0 0 250 370", content: '<path d="M 60 0 L 120 130 L 220 180 L 100 240 L 0 370 L 110 220 Z" />' },
-      { viewBox: "0 0 320 310", content: '<path d="M 130 0 L 180 90 L 320 210 L 130 150 L 0 310 L 50 210 Z" />' },
-      { viewBox: "0 0 320 320", content: '<path d="M 110 0 L 230 100 L 320 150 L 210 130 L 180 220 L 0 320 L 60 200 Z" />' }
+      "M 20 80 L 50 15 L 80 80 L 50 60 Z",
+      "M 10 50 Q 30 10 50 40 Q 70 10 90 50 Q 50 70 10 50 Z",
+      "M 15 70 L 50 15 L 65 45 L 85 30 L 55 85 Z",
+      "M 10 40 L 45 20 L 60 50 L 90 25 L 50 80 Z",
+      "M 20 60 L 50 10 L 80 50 L 60 55 L 50 90 L 40 55 Z",
+      "M 10 75 L 40 25 L 70 50 L 90 20 L 55 85 Z",
+      "M 15 35 L 50 15 L 85 35 L 65 65 L 50 90 L 35 65 Z",
+      "M 10 65 L 35 20 L 60 45 L 90 15 L 60 80 Z"
     ];
 
-    const birdLayer = document.getElementById('birdLayer');
-    const shades = ['#9ca3af', '#6b7280', '#4b5563', '#cbd5e1', '#d4af37'];
+    const birdColors = ['#d4af37', '#e2e8f0', '#94a3b8', '#cbd5e1', '#f59e0b'];
 
-    async function loadBirds() {
-      let shapesData = [];
+    function renderDecorBirds() {
+      const birdLayer = document.getElementById('birdLayer');
+      birdLayer.innerHTML = '';
 
-      // Tente d'analyser le fichier externe si présent
-      const hiddenDiv = document.createElement('div');
-      hiddenDiv.style.position = 'absolute';
-      hiddenDiv.style.visibility = 'hidden';
-      hiddenDiv.style.top = '-9999px';
-      document.body.appendChild(hiddenDiv);
+      // Génération de 24 oiseaux décoratifs répartis proprement dans le Hero
+      for (let i = 0; i < 24; i++) {
+        let x = Math.random() * 88 + 6;
+        let y = Math.random() * 80 + 10;
 
-      try {
-        const res = await fetch('./PDP-3-AJN-DET-000-TZ-204-0401-0.svg');
-        if (res.ok) {
-          const svgText = await res.text();
-          hiddenDiv.innerHTML = svgText;
-          const svgEl = hiddenDiv.querySelector('svg');
-          if (svgEl) {
-            const raw = Array.from(svgEl.querySelectorAll('path, polygon, polyline, g'));
-            raw.forEach(el => {
-              try {
-                const box = el.getBBox();
-                if (box.width >= 5 && box.height >= 5) {
-                  shapesData.push({
-                    content: el.outerHTML,
-                    viewBox: `${box.x - 2} ${box.y - 2} ${box.width + 4} ${box.height + 4}`
-                  });
-                }
-              } catch(e){}
-            });
-          }
-        }
-      } catch(err) {
-        // Fallback automatique
-      } finally {
-        hiddenDiv.remove();
-      }
-
-      // Si pas de SVG externe, utilise la collection intégrée des 8 formes
-      if (shapesData.length === 0) {
-        shapesData = official8Birds;
-      }
-
-      // Génération de 40 oiseaux répartis
-      for (let i = 0; i < 40; i++) {
-        let x = Math.random() * 90 + 5;
-        let y = Math.random() * 88 + 6;
-
-        // Évite le centre strict pour laisser le titre lisible
-        if (x > 25 && x < 75 && y > 30 && y < 70) {
+        // Éviter la zone centrale du titre
+        if (x > 25 && x < 75 && y > 25 && y < 75) {
           x = x < 50 ? x - 22 : x + 22;
         }
 
-        const rotation = Math.random() * 360;
-        const scale = 0.75 + Math.random() * 0.6;
-        const shade = shades[Math.floor(Math.random() * shades.length)];
-        
-        // Distribution équilibrée entre les 8 formes
-        const shape = shapesData[i % shapesData.length];
-        const spot = techSpots[i % techSpots.length];
+        const birdPath = official8Birds[i % official8Birds.length];
+        const color = birdColors[i % birdColors.length];
+        const delay = (Math.random() * 4).toFixed(1);
 
-        const bird = document.createElement('div');
-        bird.className = 'bird-item';
-        bird.style.left = `${x}%`;
-        bird.style.top = `${y}%`;
-        bird.style.transform = `rotate(${rotation}deg) scale(${scale})`;
-        bird.dataset.origTransform = `rotate(${rotation}deg) scale(${scale})`;
+        const svgNode = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svgNode.setAttribute("viewBox", "0 0 100 100");
+        svgNode.setAttribute("class", "bird-svg");
+        svgNode.style.left = `${x}%`;
+        svgNode.style.top = `${y}%`;
+        svgNode.style.animationDelay = `${delay}s`;
 
-        bird.innerHTML = `
-          <svg viewBox="${shape.viewBox}" width="100%" height="100%" style="overflow: visible;">
-            <g fill="${shade}" stroke="rgba(255,255,255,0.4)" stroke-width="1.5">
-              ${shape.content}
-            </g>
-          </svg>
-        `;
+        const pathNode = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        pathNode.setAttribute("d", birdPath);
+        pathNode.setAttribute("fill", color);
+        pathNode.setAttribute("opacity", "0.85");
 
-        bird.addEventListener('mouseenter', () => playNote(baseNotes[i % baseNotes.length]));
-        bird.addEventListener('mouseleave', () => bird.style.transform = bird.dataset.origTransform);
-        bird.addEventListener('click', () => openModal(spot));
-
-        birdLayer.appendChild(bird);
+        svgNode.appendChild(pathNode);
+        birdLayer.appendChild(svgNode);
       }
     }
 
-    window.addEventListener('DOMContentLoaded', loadBirds);
+    window.addEventListener('DOMContentLoaded', renderDecorBirds);
   </script>
 </body>
 </html>
