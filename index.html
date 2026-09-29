@@ -22,8 +22,16 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at center, #181824 0%, #0a0a0c 100%);
       overflow: hidden;
+      background-color: #0a0a0c;
+    }
+
+    /* Effet d'inversion dynamique (négatif) par rapport à l'arrière-plan */
+    .negative-text-blend {
+      mix-blend-mode: difference;
+      color: #ffffff;
+      z-index: 10;
+      pointer-events: none;
     }
 
     .hero-title {
@@ -31,17 +39,30 @@
       font-weight: 800;
       text-align: center;
       line-height: 1.1;
-      z-index: 10;
-      background: linear-gradient(135deg, #ffffff 0%, #d4af37 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      /* Le texte pur blanc avec mix-blend-mode: difference créera le négatif parfait */
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.125rem, 2vw, 1.5rem);
+      font-weight: 300;
+      letter-spacing: 0.025em;
+    }
+
+    /* Transition fluide du fond de nuit */
+    .bg-night-layer {
+      opacity: 0;
+      transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Classe activée par le JS au survol des oiseaux */
+    .is-night-mode .bg-night-layer {
+      opacity: 1;
     }
 
     .bird-layer {
       position: absolute;
       inset: 0;
-      z-index: 5;
+      z-index: 15;
       pointer-events: auto;
     }
 
@@ -50,11 +71,9 @@
       position: absolute;
       width: clamp(40px, 5vw, 70px);
       height: clamp(40px, 5vw, 70px);
-      opacity: 0.85; /* Légère transparence pour mieux se fondre avec le fond sombre */
+      opacity: 0.85; 
       cursor: pointer;
-      /* On s'assure que la transparence des PNG est bien gérée (fonds transparents attendus) */
       mix-blend-mode: normal; 
-      /* Transition progressive fluide sur toutes les propriétés */
       transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
                   opacity 0.5s ease, 
                   filter 0.5s ease;
@@ -65,7 +84,6 @@
     .bird-png:hover, .bird-png.touch-active {
       opacity: 1;
       transform: scale(1.4) translateY(-8px) !important;
-      /* On sature, jaunit et ajoute un halo à l'image PNG */
       filter: drop-shadow(0 0 18px rgba(250, 204, 21, 0.95)) brightness(1.6) sepia(1) hue-rotate(-30deg) saturate(5);
     }
 
@@ -94,17 +112,24 @@
 
   <!-- HERO SECTION -->
   <header class="hero-container" id="hero">
+    
+    <!-- Fonds dynamiques Jour/Nuit -->
+    <!-- Image de jour (toujours visible en fond) -->
+    <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat" style="background-image: url('37813204802_db32vxcecb_b (1).jpg');"></div>
+    <!-- Image de nuit (apparaît en fondu par-dessus) -->
+    <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat bg-night-layer" style="background-image: url('37813204802_db32b07ecb_b (1).jpg');"></div>
+
     <!-- Tag informatif -->
-    <div class="absolute top-6 z-20 px-5 py-2 rounded-full border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 text-xs md:text-sm font-semibold flex items-center gap-2 backdrop-blur-md shadow-lg">
+    <div class="absolute top-6 z-20 px-5 py-2 rounded-full border border-yellow-500/30 bg-black/40 text-yellow-400 text-xs md:text-sm font-semibold flex items-center gap-2 backdrop-blur-md shadow-lg mix-blend-normal">
       <span class="w-2.5 h-2.5 rounded-full bg-yellow-400 animate-pulse"></span>
       Motifs décoratifs : Survolez ou touchez les oiseaux (Son & Lumière progressive)
     </div>
 
-    <!-- Titre Principal -->
-    <div class="z-10 text-center px-4 my-auto space-y-3 pointer-events-none">
+    <!-- Titre Principal avec effet Négatif (Difference) -->
+    <div class="negative-text-blend text-center px-4 my-auto space-y-3">
       <h1 class="hero-title">La Philharmonie de Paris :<br>Le bâtiment & l'énergie</h1>
-      <p class="text-lg md:text-2xl font-light text-zinc-300 tracking-wide">
-        
+      <p class="hero-subtitle">
+        Anatomie, Climat & Performance
       </p>
     </div>
 
@@ -121,7 +146,6 @@
         <p class="text-zinc-400 text-sm md:text-base mt-1">L'édifice d'exception conçu par les Ateliers Jean Nouvel.</p>
       </div>
 
-      <!-- Cartes Chiffres Clés -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="glass-panel p-5 text-center hover:border-yellow-500/40 transition">
           <div class="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Surface Utile / Brute</div>
@@ -145,9 +169,7 @@
         </div>
       </div>
 
-      <!-- Modèle 3D à gauche + Google Maps 2.5D à droite -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Bloc Modèle 3D -->
         <div class="glass-panel p-4 flex flex-col h-[450px] shadow-2xl relative">
           <div class="flex items-center justify-between mb-3 px-2">
             <span class="text-xs font-semibold text-yellow-400 flex items-center gap-2">
@@ -166,7 +188,6 @@
           </div>
         </div>
 
-        <!-- Google Maps 2.5D / Street View Embed -->
         <div class="glass-panel p-4 flex flex-col h-[450px] shadow-2xl relative">
           <div class="flex items-center justify-between mb-3 px-2">
             <span class="text-xs font-semibold text-yellow-400 flex items-center gap-2">
@@ -197,12 +218,9 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Réseaux Urbains -->
         <div class="glass-panel p-6 space-y-4">
           <div class="flex items-center gap-3">
-            <div class="p-3 bg-yellow-500/10 rounded-xl text-yellow-400 text-xl">
-              ⚡
-            </div>
+            <div class="p-3 bg-yellow-500/10 rounded-xl text-yellow-400 text-xl">⚡</div>
             <h3 class="text-xl font-bold text-white">Les Réseaux Urbains</h3>
           </div>
           <p class="text-sm text-zinc-300 leading-relaxed">
@@ -224,13 +242,10 @@
           </ul>
         </div>
 
-        <!-- Supervision GTB -->
         <div class="glass-panel p-6 space-y-4">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 text-xl">
-                🖥️
-              </div>
+              <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 text-xl">🖥️</div>
               <h3 class="text-xl font-bold text-white">Cœur Électrique & Supervision GTB</h3>
             </div>
             <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-full border border-emerald-500/30 font-mono">GTB ACTIF</span>
@@ -273,7 +288,7 @@
       </div>
     </section>
 
-    <!-- SECTION 3 : MAINTIEN DU CLIMAT (CONTRAINTE ARTISTIQUE) -->
+    <!-- SECTION 3 : MAINTIEN DU CLIMAT -->
     <section class="space-y-8">
       <div class="border-l-4 border-yellow-500 pl-4">
         <h2 class="text-3xl md:text-4xl font-extrabold text-white">3. Le Maintien du Climat : Une Contrainte Artistique</h2>
@@ -318,14 +333,13 @@
       </div>
     </section>
 
-    <!-- SECTION 4 : BILAN ÉNERGÉTIQUE & PLAN D'ACTION -->
+    <!-- SECTION 4 : BILAN ÉNERGÉTIQUE -->
     <section class="space-y-10">
       <div class="border-l-4 border-yellow-500 pl-4">
         <h2 class="text-3xl md:text-4xl font-extrabold text-white">4. Bilan Énergétique : La Chasse au Gaspillage (2023 - 2025)</h2>
         <p class="text-zinc-400 text-sm md:text-base mt-1">Évolution des consommations et actions d'efficacité énergétique.</p>
       </div>
 
-      <!-- Graphique Interactif Chart.js -->
       <div class="glass-panel p-6 md:p-8 space-y-6 shadow-2xl">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
@@ -352,7 +366,6 @@
         </div>
       </div>
 
-      <!-- Plan d'Action -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="glass-panel p-6 space-y-3">
           <div class="text-yellow-400 text-xl font-bold">01. Relamping LED Massif</div>
@@ -386,7 +399,6 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Projet Solaire -->
         <div class="glass-panel p-6 space-y-4 border-l-2 border-yellow-500">
           <h3 class="text-xl font-bold text-white flex items-center gap-2">☀️ Le Projet Solaire Photovoltaïque</h3>
           <p class="text-xs md:text-sm text-zinc-300 leading-relaxed">
@@ -394,7 +406,6 @@
           </p>
         </div>
 
-        <!-- Raccordement Tableau Électrique & GTB -->
         <div class="glass-panel p-6 space-y-4 border-l-2 border-emerald-500">
           <h3 class="text-xl font-bold text-white flex items-center gap-2">⚡ Raccordement Intégral GTB & Tableau Électrique</h3>
           <p class="text-xs md:text-sm text-zinc-300 leading-relaxed">
@@ -427,18 +438,15 @@
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
 
-        // Notes de gamme pentatonique pour un rendu harmonieux (C4 à E5)
         const notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
         const randomFreq = notes[Math.floor(Math.random() * notes.length)];
 
-        // Forme d'onde type triangle (proche d'un timbre doux type piano électrique / cloche)
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(randomFreq, now);
 
-        // Enveloppe ADSR simulant la frappe d'une note de piano (attaque nette, déclin long)
         gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(0.4, now + 0.02); // Attaque
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5); // Relâchement
+        gain.gain.linearRampToValueAtTime(0.4, now + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
 
         osc.connect(gain);
         gain.connect(audioCtx.destination);
@@ -458,7 +466,6 @@
     const cpcuData = [null, 3739, 3494, 4858, 3579, 2985, 3309, 2712];
     const waterData = [16920, 14141, 13941, 9521, 12186, 12345, 12172, 14055];
 
-    // Chart.js Configuration
     const ctx = document.getElementById('energyChart').getContext('2d');
     new Chart(ctx, {
       type: 'line',
@@ -499,7 +506,7 @@
             borderColor: '#3b82f6',
             backgroundColor: 'rgba(59, 130, 246, 0.1)',
             borderWidth: 2,
-            borderDash: [5, 5], // Style pointillé pour différencier l'eau
+            borderDash: [5, 5],
             tension: 0.3,
             yAxisID: 'yWater'
           }
@@ -530,15 +537,14 @@
             position: 'right',
             title: { display: true, text: 'Eau (m³)', color: '#3b82f6' },
             ticks: { color: '#3b82f6' }, 
-            grid: { drawOnChartArea: false } // Empêche le chevauchement des lignes de grille
+            grid: { drawOnChartArea: false } 
           }
         }
       }
     });
 
 
-    // --- 3. DÉCORATION : LES 30 OISEAUX INDÉPENDANTS (IMAGES PNG TRANSPARENTES) ---
-    // Noms de fichiers supposés mis à jour vers l'extension .png
+    // --- 3. DÉCORATION ET EFFET JOUR/NUIT ---
     const pngFiles = [
       '01.png', '02.png', '03.png', '04.png', 
       '05.png', '06.png', '07.png', '08.png'
@@ -546,14 +552,14 @@
 
     function renderDecorBirds() {
       const birdLayer = document.getElementById('birdLayer');
+      const heroSection = document.getElementById('hero');
       birdLayer.innerHTML = '';
 
-      // Générer environ 32 oiseaux (4 exemplaires de chacune des 8 formes)
+      // Générer les oiseaux
       for (let i = 0; i < 32; i++) {
         let x = Math.random() * 88 + 6;
         let y = Math.random() * 80 + 10;
 
-        // Éviter le centre (où se trouve le texte principal)
         if (x > 25 && x < 75 && y > 25 && y < 75) {
           x = x < 50 ? x - 22 : x + 22;
         }
@@ -563,7 +569,6 @@
 
         const imgNode = document.createElement("img");
         imgNode.setAttribute("src", file);
-        // Utilisation de la nouvelle classe CSS pour cibler les PNG
         imgNode.setAttribute("class", "bird-png");
         imgNode.setAttribute("alt", "Oiseau géométrique décoratif");
         
@@ -571,20 +576,27 @@
         imgNode.style.top = `${y}%`;
         imgNode.style.animationDelay = `${delay}s`;
 
-        // Gestion de l'interaction (Souris / Tactile)
+        // Gestion du déclenchement de la version "Nuit" au survol/toucher
         
-        // Souris
-        imgNode.addEventListener('pointerenter', () => {
+        // --- Souris (Desktop) ---
+        imgNode.addEventListener('mouseenter', () => {
           playPianoNote();
+          heroSection.classList.add('is-night-mode');
+        });
+        
+        imgNode.addEventListener('mouseleave', () => {
+          heroSection.classList.remove('is-night-mode');
         });
 
-        // Appareils Tactiles (iPhone / Android)
+        // --- Tactile (Mobile) ---
         imgNode.addEventListener('touchstart', (e) => {
           playPianoNote();
-          // Active manuellement le style d'illumination sur mobile
           imgNode.classList.add('touch-active');
+          heroSection.classList.add('is-night-mode');
+          
           setTimeout(() => {
             imgNode.classList.remove('touch-active');
+            heroSection.classList.remove('is-night-mode');
           }, 1200); 
         }, { passive: true });
 
