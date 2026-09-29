@@ -46,12 +46,14 @@
     }
 
     /* Animation douce pour les oiseaux & Illumination progressive via filtres */
-    .bird-svg {
+    .bird-png {
       position: absolute;
-      width: clamp(35px, 4vw, 60px);
-      height: clamp(35px, 4vw, 60px);
-      opacity: 0.6;
+      width: clamp(40px, 5vw, 70px);
+      height: clamp(40px, 5vw, 70px);
+      opacity: 0.85; /* Légère transparence pour mieux se fondre avec le fond sombre */
       cursor: pointer;
+      /* On s'assure que la transparence des PNG est bien gérée (fonds transparents attendus) */
+      mix-blend-mode: normal; 
       /* Transition progressive fluide sur toutes les propriétés */
       transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
                   opacity 0.5s ease, 
@@ -60,10 +62,10 @@
     }
 
     /* Effet d'illumination progressive intense au survol ou au tap (mobile) */
-    .bird-svg:hover, .bird-svg.touch-active {
+    .bird-png:hover, .bird-png.touch-active {
       opacity: 1;
       transform: scale(1.4) translateY(-8px) !important;
-      /* On sature et jaunit l'image SVG externe pour simuler l'illumination */
+      /* On sature, jaunit et ajoute un halo à l'image PNG */
       filter: drop-shadow(0 0 18px rgba(250, 204, 21, 0.95)) brightness(1.6) sepia(1) hue-rotate(-30deg) saturate(5);
     }
 
@@ -106,7 +108,7 @@
       </p>
     </div>
 
-    <!-- Nuage décoratif des oiseaux externes -->
+    <!-- Nuage décoratif des oiseaux (images PNG) -->
     <div class="bird-layer" id="birdLayer"></div>
   </header>
 
@@ -535,11 +537,11 @@
     });
 
 
-    // --- 3. DÉCORATION : LES 30 OISEAUX INDÉPENDANTS (IMAGES SVG) ---
-    // Correspond aux fichiers 01.svg à 08.svg du dépôt
-    const svgFiles = [
-      '01.svg', '02.svg', '03.svg', '04.svg', 
-      '05.svg', '06.svg', '07.svg', '08.svg'
+    // --- 3. DÉCORATION : LES 30 OISEAUX INDÉPENDANTS (IMAGES PNG TRANSPARENTES) ---
+    // Noms de fichiers supposés mis à jour vers l'extension .png
+    const pngFiles = [
+      '01.png', '02.png', '03.png', '04.png', 
+      '05.png', '06.png', '07.png', '08.png'
     ];
 
     function renderDecorBirds() {
@@ -556,20 +558,20 @@
           x = x < 50 ? x - 22 : x + 22;
         }
 
-        const file = svgFiles[i % svgFiles.length];
+        const file = pngFiles[i % pngFiles.length];
         const delay = (Math.random() * 4).toFixed(1);
 
         const imgNode = document.createElement("img");
         imgNode.setAttribute("src", file);
-        imgNode.setAttribute("class", "bird-svg");
-        imgNode.setAttribute("alt", "Oiseau géométrique");
+        // Utilisation de la nouvelle classe CSS pour cibler les PNG
+        imgNode.setAttribute("class", "bird-png");
+        imgNode.setAttribute("alt", "Oiseau géométrique décoratif");
         
         imgNode.style.left = `${x}%`;
         imgNode.style.top = `${y}%`;
         imgNode.style.animationDelay = `${delay}s`;
 
         // Gestion de l'interaction (Souris / Tactile)
-        // L'effet lumineux (hover) est géré en CSS via .bird-svg:hover et la classe .touch-active
         
         // Souris
         imgNode.addEventListener('pointerenter', () => {
