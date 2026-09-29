@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth bg-[#0a0a0c]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Philharmonie : Le Bâtiment</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;800&display=swap');
+    body { font-family: 'Montserrat', sans-serif; color: #f4f4f5; overflow-x: hidden; }
+    
+    .hero-container {
+      position: relative;
+      height: 80vh;
+      min-height: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at center, #1a1a24 0%, #0a0a0c 100%);
+      overflow: hidden;
+    }
+
+    .hero-title {
+      font-size: clamp(3rem, 6vw, 5rem);
+      font-weight: 800;
+      text-align: center;
+      line-height: 1.1;
+      z-index: 10;
+      pointer-events: none;
+      background: linear-gradient(135deg, #ffffff, #d4af37);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .bird-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+    }
+    
+    .bird-item {
+      position: absolute;
+      width: 75px; /* Légèrement plus grand pour bien voir la géométrie complexe */
+      height: 75px;
+      cursor: pointer;
+      pointer-events: auto;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));
+    }
+    
+    .bird-item:hover {
+      transform: scale(1.6) rotate(5deg) !important;
+      filter: drop-shadow(0 0 15px #d4af37) brightness(1.3);
+      z-index: 50;
+    }
+    
+    .bird-item path {
+      transition: fill 0.3s ease, stroke 0.3s ease;
+    }
+    
+    .bird-item:hover path {
+      fill: #d4af37 !important;
+      stroke: #fff !important;
+    }
+
+    .glass-panel {
+      background: rgba(20, 20, 23, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 1rem;
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <header class="hero-container" id="hero">
+    <div class="absolute top-8 z-20 px-4 py-2 rounded-full border border-yellow-500/30 bg-yellow-500/10 text-yellow-500 text-sm font-semibold flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+      Acoustique active : Survolez les oiseaux pour jouer
+    </div>
+    
+    <h1 class="hero-title">Philharmonie<br><span class="text-4xl md:text-6xl font-light text-gray-300 -webkit-text-fill-color-initial">Le Bâtiment</span></h1>
+    
+    <div class="bird-layer" id="birdLayer"></div>
+  </header>
+
+  <section class="max-w-6xl mx-auto px-6 py-20">
+    <div class="mb-10 text-center">
+      <h2 class="text-3xl font-bold text-white mb-4">Immersion Architecturale 3D</h2>
+      <p class="text-gray-400 max-w-2xl mx-auto">Utilisez votre serveur local (Live Server ou Python) pour charger correctement le modèle GLB et naviguer dans la structure.</p>
+    </div>
+
+    <div class="glass-panel p-2 shadow-2xl relative">
+      <model-viewer 
+        src="philharmonie.glb" 
+        alt="Modèle 3D de la Philharmonie de Paris" 
+        camera-controls 
+        auto-rotate 
+        rotation-per-second="30deg"
+        shadow-intensity="1.5" 
+        exposure="1.2"
+        environment-image="neutral"
+        style="width: 100%; height: 700px; border-radius: 0.75rem; background-color: #0d0d12;">
+        
+        <div slot="poster" class="absolute inset-0 flex items-center justify-center bg-[#0d0d12] rounded-xl text-gray-400 flex-col gap-4">
+          <svg class="w-12 h-12 animate-spin text-yellow-500" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+          <p>Chargement du modèle géant...</p>
+        </div>
+      </model-viewer>
+    </div>
+  </section>
+
+  <script>
+    // --- 1. MOTEUR AUDIO ---
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    const baseNotes = [130.81, 146.83, 164.81, 196.00, 220.00, 261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25, 783.99, 880.00];
+    const notes = [];
+    for(let i=0; i<50; i++) {
+      notes.push(baseNotes[i % baseNotes.length] * (1 + Math.floor(i / baseNotes.length)));
+    }
+
+    function playNote(freq) {
+      initAudio();
+      if (!audioCtx) return;
+
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now);
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.linearRampToValueAtTime(0.3, now + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.5);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 1.6);
+    }
+
+    document.addEventListener('click', initAudio, { once: true });
+
+    // --- 2. SCATTERING DES OISEAUX EXACTS ---
+    const birdLayer = document.getElementById('birdLayer');
+    
+    // Tracé SVG exact basé sur le calepinage de l'enveloppe aluminium
+    // Reprend la tête pointue, les ailes asymétriques et la queue fourchue.
+    const birdPathD = "M 50 0 L 65 20 L 100 15 L 90 40 L 70 50 L 80 90 L 65 100 L 50 75 L 35 100 L 20 90 L 30 50 L 10 40 L 0 15 L 35 20 Z";
+    
+    // Nuances calquées sur la photographie des panneaux
+    const shades = ['#d1d5db', '#9ca3af', '#6b7280', '#4b5563', '#e5e7eb'];
+
+    for (let i = 0; i < 50; i++) {
+      let x, y;
+      let validPosition = false;
+
+      while (!validPosition) {
+        x = Math.random() * 90 + 5;
+        y = Math.random() * 90 + 5;
+        
+        if (!(x > 25 && x < 75 && y > 30 && y < 70)) {
+          validPosition = true;
+        }
+      }
+
+      const rotation = Math.random() * 360;
+      const scale = 0.4 + Math.random() * 0.5;
+      const shade = shades[Math.floor(Math.random() * shades.length)];
+      
+      const bird = document.createElement('div');
+      bird.className = 'bird-item';
+      bird.style.left = `${x}%`;
+      bird.style.top = `${y}%`;
+      bird.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+      
+      bird.dataset.origTransform = `rotate(${rotation}deg) scale(${scale})`;
+
+      bird.innerHTML = `
+        <svg viewBox="0 0 100 100" width="100%" height="100%" style="overflow: visible;">
+          <path d="${birdPathD}" fill="${shade}" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linejoin="miter" />
+        </svg>
+      `;
+
+      bird.addEventListener('mouseenter', () => {
+        playNote(notes[i]);
+      });
+
+      bird.addEventListener('mouseleave', () => {
+        bird.style.transform = bird.dataset.origTransform;
+      });
+
+      birdLayer.appendChild(bird);
+    }
+  </script>
+</body>
+</html>
