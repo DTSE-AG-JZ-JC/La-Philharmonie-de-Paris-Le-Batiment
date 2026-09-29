@@ -46,8 +46,8 @@
     
     .bird-item {
       position: absolute;
-      width: 75px; /* Légèrement plus grand pour bien voir la géométrie complexe */
-      height: 75px;
+      width: 70px; 
+      height: 70px;
       cursor: pointer;
       pointer-events: auto;
       transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
@@ -93,7 +93,7 @@
   <section class="max-w-6xl mx-auto px-6 py-20">
     <div class="mb-10 text-center">
       <h2 class="text-3xl font-bold text-white mb-4">Immersion Architecturale 3D</h2>
-      <p class="text-gray-400 max-w-2xl mx-auto">Utilisez votre serveur local (Live Server ou Python) pour charger correctement le modèle GLB et naviguer dans la structure.</p>
+      <p class="text-gray-400 max-w-2xl mx-auto">Explorez le modèle 3D interactif du bâtiment. Assurez-vous d'être sur GitHub Pages pour que le modèle s'affiche correctement.</p>
     </div>
 
     <div class="glass-panel p-2 shadow-2xl relative">
@@ -158,14 +158,21 @@
 
     document.addEventListener('click', initAudio, { once: true });
 
-    // --- 2. SCATTERING DES OISEAUX EXACTS ---
+    // --- 2. SCATTERING DES 8 OISEAUX EXACTS ---
     const birdLayer = document.getElementById('birdLayer');
     
-    // Tracé SVG exact basé sur le calepinage de l'enveloppe aluminium
-    // Reprend la tête pointue, les ailes asymétriques et la queue fourchue.
-    const birdPathD = "M 50 0 L 65 20 L 100 15 L 90 40 L 70 50 L 80 90 L 65 100 L 50 75 L 35 100 L 20 90 L 30 50 L 10 40 L 0 15 L 35 20 Z";
+    // Les 8 formes distinctes extraites du document de calepinage
+    const birdPaths = [
+      "M 35 15 L 60 20 L 55 50 L 35 80 L 20 50 L 45 40 Z", 
+      "M 5 50 L 45 60 L 55 40 L 40 10 Z",
+      "M 55 10 L 30 70 L 40 95 L 65 95 L 60 70 L 75 50 Z",
+      "M 20 45 L 45 20 L 75 30 L 60 50 L 75 75 L 30 80 Z",
+      "M 30 40 L 55 15 L 80 10 L 65 40 L 85 55 L 40 70 Z",
+      "M 30 85 L 60 40 L 50 30 L 90 15 L 85 45 L 60 55 L 75 75 Z",
+      "M 30 10 L 45 35 L 75 20 L 85 40 L 65 55 L 60 85 L 50 65 L 40 85 Z",
+      "M 25 95 L 45 50 L 35 40 L 65 20 L 95 30 L 85 60 L 55 65 Z"
+    ];
     
-    // Nuances calquées sur la photographie des panneaux
     const shades = ['#d1d5db', '#9ca3af', '#6b7280', '#4b5563', '#e5e7eb'];
 
     for (let i = 0; i < 50; i++) {
@@ -185,6 +192,9 @@
       const scale = 0.4 + Math.random() * 0.5;
       const shade = shades[Math.floor(Math.random() * shades.length)];
       
+      // Sélection aléatoire d'une des 8 formes
+      const randomPath = birdPaths[Math.floor(Math.random() * birdPaths.length)];
+      
       const bird = document.createElement('div');
       bird.className = 'bird-item';
       bird.style.left = `${x}%`;
@@ -195,7 +205,7 @@
 
       bird.innerHTML = `
         <svg viewBox="0 0 100 100" width="100%" height="100%" style="overflow: visible;">
-          <path d="${birdPathD}" fill="${shade}" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linejoin="miter" />
+          <path d="${randomPath}" fill="${shade}" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linejoin="round" />
         </svg>
       `;
 
