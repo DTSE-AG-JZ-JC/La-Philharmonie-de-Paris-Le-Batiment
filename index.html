@@ -46,9 +46,9 @@
     
     .bird-item {
       position: absolute;
-      /* Taille augmentée de 30% (clamp de base augmenté) */
-      width: clamp(55px, 8vw, 105px);
-      height: clamp(55px, 8vw, 105px);
+      /* Agrandissement de 30% des oiseaux */
+      width: clamp(70px, 10vw, 130px);
+      height: clamp(70px, 10vw, 130px);
       cursor: pointer;
       pointer-events: auto;
       transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
@@ -103,16 +103,15 @@
       <div class="mb-8 text-center md:text-left">
         <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Immersion 3D Structurale</h2>
         <p class="text-gray-400 text-sm md:text-base max-w-xl">
-          Navigation libre à 360° sans aucune contrainte d'axe.
+          Navigation libre à 360°, orientée à plat et zoomée.
         </p>
       </div>
 
       <div class="glass-panel p-2 shadow-2xl relative w-full">
         <!-- 
-          CORRECTIONS 3D APPORTÉES :
-          - orientation="0 90deg 0" : Remet le bâtiment parfaitement à plat.
-          - camera-orbit et field-of-view ajustés pour un meilleur zoom initial.
-          - Suppression totale des limites de rotation pour une liberté fluide.
+          ORIENTATION CORRIGÉE : 
+          orientation="90deg 0 0" remet parfaitement le bâtiment à plat.
+          camera-orbit rapprochée pour un meilleur zoom initial.
         -->
         <model-viewer 
           src="philharmonie.glb" 
@@ -120,9 +119,9 @@
           camera-controls 
           auto-rotate 
           rotation-per-second="15deg"
-          orientation="0 90deg 0" 
-          camera-orbit="45deg 55deg 105%"
-          field-of-view="30deg"
+          orientation="90deg 0 0" 
+          camera-orbit="0deg 75deg 60%"
+          field-of-view="40deg"
           shadow-intensity="1.2" 
           exposure="1.1"
           environment-image="neutral"
@@ -137,17 +136,18 @@
       </div>
     </section>
 
-    <!-- SECTION 2 : VUE MAPS 2.5D -->
+    <!-- SECTION 2 : VUE MAPS 2.5D (Relief incliné) -->
     <section>
       <div class="mb-8 text-center md:text-left">
-        <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Implantation Urbaine (2.5D)</h2>
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Implantation Urbaine</h2>
         <p class="text-gray-400 text-sm md:text-base max-w-xl">
-          Vue aérienne en relief de l'édifice dans le Parc de la Villette.
+          Vue satellite en relief 2.5D de l'édifice dans le Parc de la Villette.
         </p>
       </div>
       <div class="glass-panel shadow-2xl relative w-full h-[500px]">
+        <!-- Paramètre 3d=true ajouté pour forcer la perspective 2.5D relief -->
         <iframe 
-          src="https://maps.google.com/maps?q=Philharmonie+de+Paris&t=k&z=17&ie=UTF8&iwloc=&output=embed" 
+          src="https://maps.google.com/maps?q=Philharmonie+de+Paris&t=k&z=17&ie=UTF8&iwloc=&output=embed&3d=true" 
           width="100%" 
           height="100%" 
           style="border:0;" 
@@ -158,17 +158,18 @@
       </div>
     </section>
 
-    <!-- SECTION 3 : STREET VIEW GRANDE SALLE -->
+    <!-- SECTION 3 : STREET VIEW GRANDE SALLE (Regard en face) -->
     <section>
       <div class="mb-8 text-center md:text-left">
         <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Au cœur de la Grande Salle</h2>
         <p class="text-gray-400 text-sm md:text-base max-w-xl">
-          Immersion panoramique à l'intérieur de la salle Pierre Boulez.
+          Immersion panoramique horizontale à l'intérieur de la salle Pierre Boulez.
         </p>
       </div>
       <div class="glass-panel shadow-2xl relative w-full h-[600px]">
+        <!-- Paramètre d'angle vertical corrigé à 0deg pour regarder bien en face -->
         <iframe 
-          src="https://www.google.com/maps/embed?pb=!4v1700000000000!6m8!1m7!1sGA4yqvXG7ix0gN5TagDxNw!2m2!1d48.8917101!2d2.3942711!3f26.59!4f86.95!5f0.7820865974627469" 
+          src="https://www.google.com/maps/embed?pb=!4v1700000000000!6m8!1m7!1sGA4yqvXG7ix0gN5TagDxNw!2m2!1d48.8917101!2d2.3942711!3f26.59!4f0deg!5f0.7820865974627469" 
           width="100%" 
           height="100%" 
           style="border:0;" 
@@ -213,7 +214,7 @@
     document.addEventListener('click', initAudio, { once: true });
     document.addEventListener('touchstart', initAudio, { once: true });
 
-    // --- 2. CHARGEMENT DES VRAIS OISEAUX DEPUIS LE SVG ---
+    // --- 2. EXTRACTION EXACTE DES OISEAUX DU SVG ---
     const birdLayer = document.getElementById('birdLayer');
     const shades = ['#9ca3af', '#6b7280', '#4b5563', '#94a3b8', '#cbd5e1'];
 
@@ -224,7 +225,6 @@
       document.body.appendChild(hiddenDiv);
 
       try {
-        // Chargement du fichier SVG depuis le dépôt GitHub
         const response = await fetch('./PDP-3-AJN-DET-000-TZ-204-0401-0.svg');
         if (response.ok) {
           const svgText = await response.text();
@@ -235,7 +235,7 @@
             const rawShapes = Array.from(originalSvg.querySelectorAll('path, polygon, polyline'));
             shapesData = rawShapes.map(shape => {
               const bbox = shape.getBBox();
-              if (bbox.width < 5 || bbox.height < 5) return null; // Ignore les tout petits artefacts
+              if (bbox.width < 5 || bbox.height < 5) return null;
               
               const clonedNode = shape.cloneNode(true);
               clonedNode.removeAttribute('style');
@@ -251,26 +251,18 @@
           }
         }
       } catch (error) {
-        console.warn("Erreur de chargement du SVG, utilisation des formes de secours.");
+        console.warn("Erreur de chargement du SVG.");
       } finally {
         hiddenDiv.remove();
       }
 
-      // FORMES DE SECOURS GARANTIES SI BESOIN
       if (shapesData.length === 0) {
-        const fallbackPaths = [
-          "M 35 15 L 60 20 L 55 50 L 35 80 L 20 50 L 45 40 Z", 
-          "M 5 50 L 45 60 L 55 40 L 40 10 Z",
-          "M 55 10 L 30 70 L 40 95 L 65 95 L 60 70 L 75 50 Z",
-          "M 20 45 L 45 20 L 75 30 L 60 50 L 75 75 L 30 80 Z"
-        ];
-        shapesData = fallbackPaths.map(p => ({
-          content: `<path d="${p}" />`,
+        shapesData = [{
+          content: '<path d="M 35 15 L 60 20 L 55 50 L 35 80 L 20 50 L 45 40 Z" />',
           viewBox: "0 0 100 100"
-        }));
+        }];
       }
 
-      // DISPERSION DES 50 OISEAUX AUTOUR DU TITRE
       for (let i = 0; i < 50; i++) {
         let x, y;
         let validPosition = false;
@@ -282,7 +274,7 @@
         }
 
         const rotation = Math.random() * 360;
-        const scale = 0.65 + Math.random() * 0.7; // +30% de taille globale
+        const scale = 0.85 + Math.random() * 0.7; // Agrandis de 30% supplémentaires
         const shade = shades[Math.floor(Math.random() * shades.length)];
         const shapeRef = shapesData[Math.floor(Math.random() * shapesData.length)];
         
@@ -293,7 +285,6 @@
         bird.style.transform = `rotate(${rotation}deg) scale(${scale})`;
         bird.dataset.origTransform = `rotate(${rotation}deg) scale(${scale})`;
 
-        // Application d'un remplissage gris visible par défaut (plus de transparence)
         let coloredContent = shapeRef.content
           .replace(/<path/g, `<path fill="${shade}" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"`)
           .replace(/<polygon/g, `<polygon fill="${shade}" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"`)
