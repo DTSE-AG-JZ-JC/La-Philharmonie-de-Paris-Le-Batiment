@@ -45,26 +45,36 @@
       pointer-events: auto;
     }
 
-    /* Animation douce pour les oiseaux & Illumination progressive via filtres */
+    /* Animation douce pour les oiseaux */
     .bird-svg {
       position: absolute;
       width: clamp(35px, 4vw, 60px);
       height: clamp(35px, 4vw, 60px);
-      opacity: 0.6;
+      opacity: 0.85; /* Légère transparence pour se fondre, mais on garde la visibilité des gris */
       cursor: pointer;
-      /* Transition progressive fluide sur toutes les propriétés */
+      /* Transition progressive sur le SVG lui-même */
       transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
-                  opacity 0.5s ease, 
-                  filter 0.5s ease;
+                  opacity 0.5s ease, filter 0.5s ease;
       animation: floatBird 6s infinite ease-in-out alternate;
     }
 
-    /* Effet d'illumination progressive intense au survol ou au tap (mobile) */
+    /* Transitions fluides de couleurs sur les éléments internes du SVG */
+    .bird-svg * {
+      transition: fill 0.4s ease, stroke 0.4s ease;
+    }
+
+    /* Effet global (Halo lumineux + Agrégation) */
     .bird-svg:hover, .bird-svg.touch-active {
       opacity: 1;
       transform: scale(1.4) translateY(-8px) !important;
-      /* On sature et jaunit l'image SVG externe pour simuler l'illumination */
-      filter: drop-shadow(0 0 18px rgba(250, 204, 21, 0.95)) brightness(1.6) sepia(1) hue-rotate(-30deg) saturate(5);
+      filter: drop-shadow(0 0 18px rgba(250, 204, 21, 0.95)) brightness(1.2);
+    }
+
+    /* Illumination interne dorée spécifique au survol et touch */
+    .bird-svg:hover path, .bird-svg:hover polygon, .bird-svg:hover rect, .bird-svg:hover circle,
+    .bird-svg.touch-active path, .bird-svg.touch-active polygon, .bird-svg.touch-active rect, .bird-svg.touch-active circle {
+      fill: #facc15 !important;
+      stroke: #facc15 !important;
     }
 
     @keyframes floatBird {
@@ -92,13 +102,11 @@
 
   <!-- HERO SECTION -->
   <header class="hero-container" id="hero">
-    <!-- Tag informatif -->
     <div class="absolute top-6 z-20 px-5 py-2 rounded-full border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 text-xs md:text-sm font-semibold flex items-center gap-2 backdrop-blur-md shadow-lg">
       <span class="w-2.5 h-2.5 rounded-full bg-yellow-400 animate-pulse"></span>
       Motifs décoratifs : Survolez ou touchez les oiseaux (Son & Lumière progressive)
     </div>
 
-    <!-- Titre Principal -->
     <div class="z-10 text-center px-4 my-auto space-y-3 pointer-events-none">
       <h1 class="hero-title">La Philharmonie de Paris :<br>Le bâtiment & l'énergie</h1>
       <p class="text-lg md:text-2xl font-light text-zinc-300 tracking-wide">
@@ -106,7 +114,7 @@
       </p>
     </div>
 
-    <!-- Nuage décoratif des oiseaux externes -->
+    <!-- Nuage décoratif des oiseaux externes injectés via Fetch -->
     <div class="bird-layer" id="birdLayer"></div>
   </header>
 
@@ -119,7 +127,6 @@
         <p class="text-zinc-400 text-sm md:text-base mt-1">L'édifice d'exception conçu par les Ateliers Jean Nouvel.</p>
       </div>
 
-      <!-- Cartes Chiffres Clés -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="glass-panel p-5 text-center hover:border-yellow-500/40 transition">
           <div class="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Surface Utile / Brute</div>
@@ -143,9 +150,7 @@
         </div>
       </div>
 
-      <!-- Modèle 3D à gauche + Google Maps 2.5D à droite -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Bloc Modèle 3D -->
         <div class="glass-panel p-4 flex flex-col h-[450px] shadow-2xl relative">
           <div class="flex items-center justify-between mb-3 px-2">
             <span class="text-xs font-semibold text-yellow-400 flex items-center gap-2">
@@ -164,7 +169,6 @@
           </div>
         </div>
 
-        <!-- Google Maps 2.5D / Street View Embed -->
         <div class="glass-panel p-4 flex flex-col h-[450px] shadow-2xl relative">
           <div class="flex items-center justify-between mb-3 px-2">
             <span class="text-xs font-semibold text-yellow-400 flex items-center gap-2">
@@ -195,12 +199,9 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Réseaux Urbains -->
         <div class="glass-panel p-6 space-y-4">
           <div class="flex items-center gap-3">
-            <div class="p-3 bg-yellow-500/10 rounded-xl text-yellow-400 text-xl">
-              ⚡
-            </div>
+            <div class="p-3 bg-yellow-500/10 rounded-xl text-yellow-400 text-xl">⚡</div>
             <h3 class="text-xl font-bold text-white">Les Réseaux Urbains</h3>
           </div>
           <p class="text-sm text-zinc-300 leading-relaxed">
@@ -222,13 +223,10 @@
           </ul>
         </div>
 
-        <!-- Supervision GTB -->
         <div class="glass-panel p-6 space-y-4">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 text-xl">
-                🖥️
-              </div>
+              <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 text-xl">🖥️</div>
               <h3 class="text-xl font-bold text-white">Cœur Électrique & Supervision GTB</h3>
             </div>
             <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-full border border-emerald-500/30 font-mono">GTB ACTIF</span>
@@ -271,7 +269,7 @@
       </div>
     </section>
 
-    <!-- SECTION 3 : MAINTIEN DU CLIMAT (CONTRAINTE ARTISTIQUE) -->
+    <!-- SECTION 3 : MAINTIEN DU CLIMAT -->
     <section class="space-y-8">
       <div class="border-l-4 border-yellow-500 pl-4">
         <h2 class="text-3xl md:text-4xl font-extrabold text-white">3. Le Maintien du Climat : Une Contrainte Artistique</h2>
@@ -316,14 +314,13 @@
       </div>
     </section>
 
-    <!-- SECTION 4 : BILAN ÉNERGÉTIQUE & PLAN D'ACTION -->
+    <!-- SECTION 4 : BILAN ÉNERGÉTIQUE -->
     <section class="space-y-10">
       <div class="border-l-4 border-yellow-500 pl-4">
-        <h2 class="text-3xl md:text-4xl font-extrabold text-white">4. Bilan Énergétique : La Chasse au Gaspillage (2023 - 2025)</h2>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-white">4. Bilan Énergétique : La Chasse au Gaspillage</h2>
         <p class="text-zinc-400 text-sm md:text-base mt-1">Évolution des consommations et actions d'efficacité énergétique.</p>
       </div>
 
-      <!-- Graphique Interactif Chart.js -->
       <div class="glass-panel p-6 md:p-8 space-y-6 shadow-2xl">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
@@ -345,12 +342,11 @@
         <div class="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-300 text-xs md:text-sm flex items-center gap-3">
           <span class="text-xl">📉</span>
           <div>
-            <strong>Synthèse de sobriété :</strong> Chute marquée des consommations électriques, passant de plus de <strong>5 500 MWh/an</strong> à moins de <strong>2 800 MWh/an</strong> entre 2023 et 2025 grâce aux mesures d'optimisation engagées. L'eau reste optimisée annuellement.
+            <strong>Synthèse de sobriété :</strong> Chute marquée des consommations électriques, passant de plus de <strong>5 500 MWh/an</strong> à moins de <strong>2 800 MWh/an</strong> entre 2023 et 2025 grâce aux mesures d'optimisation engagées. La consommation en eau est rigoureusement suivie et optimisée.
           </div>
         </div>
       </div>
 
-      <!-- Plan d'Action -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="glass-panel p-6 space-y-3">
           <div class="text-yellow-400 text-xl font-bold">01. Relamping LED Massif</div>
@@ -384,7 +380,6 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Projet Solaire -->
         <div class="glass-panel p-6 space-y-4 border-l-2 border-yellow-500">
           <h3 class="text-xl font-bold text-white flex items-center gap-2">☀️ Le Projet Solaire Photovoltaïque</h3>
           <p class="text-xs md:text-sm text-zinc-300 leading-relaxed">
@@ -392,7 +387,6 @@
           </p>
         </div>
 
-        <!-- Raccordement Tableau Électrique & GTB -->
         <div class="glass-panel p-6 space-y-4 border-l-2 border-emerald-500">
           <h3 class="text-xl font-bold text-white flex items-center gap-2">⚡ Raccordement Intégral GTB & Tableau Électrique</h3>
           <p class="text-xs md:text-sm text-zinc-300 leading-relaxed">
@@ -425,18 +419,16 @@
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
 
-        // Notes de gamme pentatonique pour un rendu harmonieux (C4 à E5)
+        // Notes de gamme pentatonique
         const notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
         const randomFreq = notes[Math.floor(Math.random() * notes.length)];
 
-        // Forme d'onde type triangle (proche d'un timbre doux type piano électrique / cloche)
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(randomFreq, now);
 
-        // Enveloppe ADSR simulant la frappe d'une note de piano (attaque nette, déclin long)
         gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(0.4, now + 0.02); // Attaque
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5); // Relâchement
+        gain.gain.linearRampToValueAtTime(0.4, now + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
 
         osc.connect(gain);
         gain.connect(audioCtx.destination);
@@ -456,7 +448,6 @@
     const cpcuData = [null, 3739, 3494, 4858, 3579, 2985, 3309, 2712];
     const waterData = [16920, 14141, 13941, 9521, 12186, 12345, 12172, 14055];
 
-    // Chart.js Configuration
     const ctx = document.getElementById('energyChart').getContext('2d');
     new Chart(ctx, {
       type: 'line',
@@ -497,7 +488,7 @@
             borderColor: '#3b82f6',
             backgroundColor: 'rgba(59, 130, 246, 0.1)',
             borderWidth: 2,
-            borderDash: [5, 5], // Style pointillé pour différencier l'eau
+            borderDash: [5, 5],
             tension: 0.3,
             yAxisID: 'yWater'
           }
@@ -528,65 +519,108 @@
             position: 'right',
             title: { display: true, text: 'Eau (m³)', color: '#3b82f6' },
             ticks: { color: '#3b82f6' }, 
-            grid: { drawOnChartArea: false } // Empêche le chevauchement des lignes de grille
+            grid: { drawOnChartArea: false }
           }
         }
       }
     });
 
 
-    // --- 3. DÉCORATION : LES 30 OISEAUX INDÉPENDANTS (IMAGES SVG) ---
-    // Correspond aux fichiers 01.svg à 08.svg du dépôt
+    // --- 3. DÉCORATION : INJECTION SVG & NETTOYAGE DES FONDS BLANCS ---
+    // Correspond aux fichiers du dépôt
     const svgFiles = [
       '01.svg', '02.svg', '03.svg', '04.svg', 
       '05.svg', '06.svg', '07.svg', '08.svg'
     ];
+    
+    // Palette de gris (du clair au plus foncé) pour remplir l'intérieur
+    const grayTones = ['#f3f4f6', '#e5e7eb', '#d1d5db', '#9ca3af', '#6b7280'];
 
-    function renderDecorBirds() {
+    async function renderDecorBirds() {
       const birdLayer = document.getElementById('birdLayer');
       birdLayer.innerHTML = '';
 
-      // Générer environ 32 oiseaux (4 exemplaires de chacune des 8 formes)
+      // Préchargement du code source de chaque SVG
+      const svgCache = {};
+      for (const file of svgFiles) {
+        try {
+          const response = await fetch(file);
+          if (response.ok) {
+            svgCache[file] = await response.text();
+          }
+        } catch (e) {
+          console.warn(`Impossible de charger ${file}:`, e);
+        }
+      }
+
+      // Génération des 30+ oiseaux
       for (let i = 0; i < 32; i++) {
         let x = Math.random() * 88 + 6;
         let y = Math.random() * 80 + 10;
 
-        // Éviter le centre (où se trouve le texte principal)
+        // Éviter le texte principal au centre
         if (x > 25 && x < 75 && y > 25 && y < 75) {
           x = x < 50 ? x - 22 : x + 22;
         }
 
         const file = svgFiles[i % svgFiles.length];
         const delay = (Math.random() * 4).toFixed(1);
+        const randomGray = grayTones[Math.floor(Math.random() * grayTones.length)];
 
-        const imgNode = document.createElement("img");
-        imgNode.setAttribute("src", file);
-        imgNode.setAttribute("class", "bird-svg");
-        imgNode.setAttribute("alt", "Oiseau géométrique");
-        
-        imgNode.style.left = `${x}%`;
-        imgNode.style.top = `${y}%`;
-        imgNode.style.animationDelay = `${delay}s`;
+        if (!svgCache[file]) continue; // Ignore si le fichier n'a pas pu être fetch
 
-        // Gestion de l'interaction (Souris / Tactile)
-        // L'effet lumineux (hover) est géré en CSS via .bird-svg:hover et la classe .touch-active
-        
-        // Souris
-        imgNode.addEventListener('pointerenter', () => {
-          playPianoNote();
-        });
+        // Créer un wrapper DOM temporaire pour manipuler le code SVG
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = svgCache[file];
+        const svgNode = tempDiv.querySelector('svg');
 
-        // Appareils Tactiles (iPhone / Android)
-        imgNode.addEventListener('touchstart', (e) => {
-          playPianoNote();
-          // Active manuellement le style d'illumination sur mobile
-          imgNode.classList.add('touch-active');
-          setTimeout(() => {
-            imgNode.classList.remove('touch-active');
-          }, 1200); 
-        }, { passive: true });
+        if (svgNode) {
+          // --- Nettoyage : retirer le fond blanc et coloriser l'intérieur en gris ---
+          svgNode.querySelectorAll('*').forEach(el => {
+            const tag = el.tagName.toLowerCase();
+            const fill = el.getAttribute('fill');
 
-        birdLayer.appendChild(imgNode);
+            // 1. Détecter et supprimer les rectangles de fond (blancs)
+            if (tag === 'rect' && (fill === 'white' || fill === '#ffffff' || fill === '#FFFFFF')) {
+              el.remove();
+            } 
+            // 2. Pour les autres formes (chemins, polygones), appliquer la couleur grise
+            else if (['path', 'polygon', 'circle', 'rect', 'ellipse'].includes(tag)) {
+              el.setAttribute('fill', randomGray);
+              
+              // Si la forme avait une bordure noire, on la grise aussi ou on l'enlève
+              if (el.getAttribute('stroke') === 'black' || el.getAttribute('stroke') === '#000000') {
+                 el.setAttribute('stroke', randomGray);
+              }
+
+              // Nettoyer les styles inline qui bloqueraient les effets CSS (.bird-svg:hover)
+              el.style.fill = ''; 
+              el.style.stroke = '';
+            }
+          });
+
+          // Paramétrage de la vue
+          svgNode.setAttribute("class", "bird-svg");
+          svgNode.style.left = `${x}%`;
+          svgNode.style.top = `${y}%`;
+          svgNode.style.animationDelay = `${delay}s`;
+
+          // Interactions (Desktop)
+          svgNode.addEventListener('pointerenter', () => {
+            playPianoNote();
+          });
+
+          // Interactions (Mobile/Tactile)
+          svgNode.addEventListener('touchstart', (e) => {
+            playPianoNote();
+            svgNode.classList.add('touch-active');
+            setTimeout(() => {
+              svgNode.classList.remove('touch-active');
+            }, 1200); 
+          }, { passive: true });
+
+          birdLayer.appendChild(svgNode);
+        }
       }
     }
 
