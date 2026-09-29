@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Philharmonie de Paris — Bâtiment, Climat & Performance Énergétique</title>
+  <title>La Philharmonie de Paris : Le bâtiment & l'énergie</title>
 
   <!-- Tailwind CSS, Chart.js & Model-Viewer -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -45,34 +45,26 @@
       pointer-events: auto;
     }
 
-    /* Animation douce pour les oiseaux & Illumination progressive */
+    /* Animation douce pour les oiseaux & Illumination progressive via filtres */
     .bird-svg {
       position: absolute;
       width: clamp(35px, 4vw, 60px);
       height: clamp(35px, 4vw, 60px);
-      opacity: 0.7;
+      opacity: 0.6;
       cursor: pointer;
       /* Transition progressive fluide sur toutes les propriétés */
       transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
                   opacity 0.5s ease, 
-                  fill 0.5s ease, 
                   filter 0.5s ease;
       animation: floatBird 6s infinite ease-in-out alternate;
     }
 
-    .bird-svg path {
-      transition: fill 0.5s ease;
-    }
-
-    /* Effet d'illumination progressive intense au survol */
-    .bird-svg:hover {
+    /* Effet d'illumination progressive intense au survol ou au tap (mobile) */
+    .bird-svg:hover, .bird-svg.touch-active {
       opacity: 1;
       transform: scale(1.4) translateY(-8px) !important;
-      filter: drop-shadow(0 0 18px rgba(250, 204, 21, 0.95)) brightness(1.6);
-    }
-
-    .bird-svg:hover path {
-      fill: #facc15 !important;
+      /* On sature et jaunit l'image SVG externe pour simuler l'illumination */
+      filter: drop-shadow(0 0 18px rgba(250, 204, 21, 0.95)) brightness(1.6) sepia(1) hue-rotate(-30deg) saturate(5);
     }
 
     @keyframes floatBird {
@@ -103,18 +95,18 @@
     <!-- Tag informatif -->
     <div class="absolute top-6 z-20 px-5 py-2 rounded-full border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 text-xs md:text-sm font-semibold flex items-center gap-2 backdrop-blur-md shadow-lg">
       <span class="w-2.5 h-2.5 rounded-full bg-yellow-400 animate-pulse"></span>
-      Motifs décoratifs : Survolez les oiseaux (Son & Lumière progressive)
+      Motifs décoratifs : Survolez ou touchez les oiseaux (Son & Lumière progressive)
     </div>
 
     <!-- Titre Principal -->
     <div class="z-10 text-center px-4 my-auto space-y-3 pointer-events-none">
-      <h1 class="hero-title">Philharmonie de Paris</h1>
+      <h1 class="hero-title">La Philharmonie de Paris :<br>Le bâtiment & l'énergie</h1>
       <p class="text-lg md:text-2xl font-light text-zinc-300 tracking-wide">
-        Anatomie, Climat & Performance Énergétique
+        Anatomie, Climat & Performance
       </p>
     </div>
 
-    <!-- Nuage décoratif des 8 oiseaux géométriques -->
+    <!-- Nuage décoratif des oiseaux externes -->
     <div class="bird-layer" id="birdLayer"></div>
   </header>
 
@@ -153,8 +145,7 @@
 
       <!-- Modèle 3D à gauche + Google Maps 2.5D à droite -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        
-        <!-- Bloc Modèle 3D (À gauche : philharmonie.glb) -->
+        <!-- Bloc Modèle 3D -->
         <div class="glass-panel p-4 flex flex-col h-[450px] shadow-2xl relative">
           <div class="flex items-center justify-between mb-3 px-2">
             <span class="text-xs font-semibold text-yellow-400 flex items-center gap-2">
@@ -173,7 +164,7 @@
           </div>
         </div>
 
-        <!-- Google Maps 2.5D / Street View Embed (À droite) -->
+        <!-- Google Maps 2.5D / Street View Embed -->
         <div class="glass-panel p-4 flex flex-col h-[450px] shadow-2xl relative">
           <div class="flex items-center justify-between mb-3 px-2">
             <span class="text-xs font-semibold text-yellow-400 flex items-center gap-2">
@@ -193,10 +184,8 @@
             </iframe>
           </div>
         </div>
-
       </div>
     </section>
-
 
     <!-- SECTION 2 : ANATOMIE DU BÂTIMENT & GTB -->
     <section class="space-y-8">
@@ -206,7 +195,6 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        
         <!-- Réseaux Urbains -->
         <div class="glass-panel p-6 space-y-4">
           <div class="flex items-center gap-3">
@@ -224,12 +212,12 @@
               <span><strong class="text-zinc-200">CPCU (Chauffage Urbain) :</strong> Alimentation en vapeur chaude pour le chauffage des espaces et l'humidification contrôlée de l'air.</span>
             </li>
             <li class="flex items-start gap-2">
-              <span class="text-blue-400 font-bold">●</span>
+              <span class="text-cyan-400 font-bold">●</span>
               <span><strong class="text-zinc-200">Fraîcheur de Paris (Froid Urbain) :</strong> Distribution d'eau glacée pour le rafraîchissement des salles de concert, des studios et des locaux techniques.</span>
             </li>
             <li class="flex items-start gap-2">
-              <span class="text-emerald-400 font-bold">●</span>
-              <span><strong class="text-zinc-200">Circulation d'eau :</strong> Un réseau hydraulique interne complexe garantissant une distribution précise de la chaleur et du froid zone par zone.</span>
+              <span class="text-blue-400 font-bold">●</span>
+              <span><strong class="text-zinc-200">Réseau d'Eau :</strong> Alimentation et gestion centralisée des fluides optimisée.</span>
             </li>
           </ul>
         </div>
@@ -280,10 +268,8 @@
           </div>
           <p class="text-xs text-zinc-400 italic">Interface de gestion technique centralisée contrôlant les paramètres environnementaux en temps réel.</p>
         </div>
-
       </div>
     </section>
-
 
     <!-- SECTION 3 : MAINTIEN DU CLIMAT (CONTRAINTE ARTISTIQUE) -->
     <section class="space-y-8">
@@ -293,13 +279,11 @@
       </div>
 
       <div class="glass-panel p-6 md:p-8 space-y-8">
-        
-        <!-- Textes explicatifs généraux -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="p-4 bg-white/5 rounded-xl border border-white/5 space-y-2">
             <h4 class="text-yellow-400 font-bold text-base">🎻 Hygrométrie de Précision</h4>
             <p class="text-xs text-zinc-300 leading-relaxed">
-              Tolérance de variation d'humidité strictly contrôlée pour éviter le dessèchement ou la déformation du bois des instruments patrimoniaux et de collection.
+              Tolérance de variation d'humidité strictement contrôlée pour éviter le dessèchement ou la déformation du bois des instruments patrimoniaux et de collection.
             </p>
           </div>
           <div class="p-4 bg-white/5 rounded-xl border border-white/5 space-y-2">
@@ -316,7 +300,6 @@
           </div>
         </div>
 
-        <!-- Photo unique : pianos en réserve -->
         <div class="relative rounded-2xl overflow-hidden h-80 shadow-2xl border border-white/10 group">
           <img 
             src="https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?auto=format&fit=crop&w=1200&q=80" 
@@ -330,10 +313,8 @@
             </div>
           </div>
         </div>
-
       </div>
     </section>
-
 
     <!-- SECTION 4 : BILAN ÉNERGÉTIQUE & PLAN D'ACTION -->
     <section class="space-y-10">
@@ -346,13 +327,14 @@
       <div class="glass-panel p-6 md:p-8 space-y-6 shadow-2xl">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h3 class="text-xl font-bold text-white">Historique des Consommations (MWh)</h3>
-            <p class="text-xs text-zinc-400">Données de 2018 à Août 2026</p>
+            <h3 class="text-xl font-bold text-white">Historique des Consommations</h3>
+            <p class="text-xs text-zinc-400">Données de 2018 à 2025</p>
           </div>
           <div class="flex flex-wrap gap-2 text-xs">
-            <span class="px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full border border-amber-500/30">⚡ Électricité</span>
-            <span class="px-3 py-1 bg-cyan-500/20 text-cyan-300 rounded-full border border-cyan-500/30">❄️ Fraîcheur de Paris</span>
-            <span class="px-3 py-1 bg-red-500/20 text-red-300 rounded-full border border-red-500/30">🔥 CPCU Chauffage</span>
+            <span class="px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full border border-amber-500/30">⚡ Électricité (MWh)</span>
+            <span class="px-3 py-1 bg-cyan-500/20 text-cyan-300 rounded-full border border-cyan-500/30">❄️ Fraîcheur (MWh)</span>
+            <span class="px-3 py-1 bg-red-500/20 text-red-300 rounded-full border border-red-500/30">🔥 CPCU (MWh)</span>
+            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/30">💧 Eau (m³)</span>
           </div>
         </div>
 
@@ -363,7 +345,7 @@
         <div class="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-300 text-xs md:text-sm flex items-center gap-3">
           <span class="text-xl">📉</span>
           <div>
-            <strong>Synthèse de sobriété :</strong> Chute marquée des consommations électriques, passant de plus de <strong>5 500 MWh/an</strong> à moins de <strong>2 800 MWh/an</strong> entre 2023 et 2025 grâce aux mesures d'optimisation engagées.
+            <strong>Synthèse de sobriété :</strong> Chute marquée des consommations électriques, passant de plus de <strong>5 500 MWh/an</strong> à moins de <strong>2 800 MWh/an</strong> entre 2023 et 2025 grâce aux mesures d'optimisation engagées. L'eau reste optimisée annuellement.
           </div>
         </div>
       </div>
@@ -379,7 +361,7 @@
         </div>
         <div class="glass-panel p-6 space-y-3">
           <div class="text-yellow-400 text-xl font-bold">02. Détecteurs de Présence</div>
-          <p class="text-xs text-zinc-400">Déploiement 2025 - 2026</p>
+          <p class="text-xs text-zinc-400">Déploiement 2025</p>
           <p class="text-xs text-zinc-300 leading-relaxed">
             Installation de capteurs intelligents dans l'ensemble des zones d'occupation intermittente et circulations techniques.
           </p>
@@ -394,7 +376,6 @@
       </div>
     </section>
 
-
     <!-- SECTION 5 : CAP VERS L'AVENIR -->
     <section class="space-y-8">
       <div class="border-l-4 border-yellow-500 pl-4">
@@ -403,7 +384,6 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        
         <!-- Projet Solaire -->
         <div class="glass-panel p-6 space-y-4 border-l-2 border-yellow-500">
           <h3 class="text-xl font-bold text-white flex items-center gap-2">☀️ Le Projet Solaire Photovoltaïque</h3>
@@ -419,22 +399,20 @@
             Tous les départs de notre tableau électrique principal ont été entièrement reliés à la GTB (Gestion Technique du Bâtiment) afin de permettre à l'avenir une mesure ultra-fine et une optimisation globale de chaque sous-circuit.
           </p>
           <div class="p-3 bg-black/40 rounded-lg text-xs text-emerald-300 font-mono">
-            ✓ Supervision sous-circuit par sous-circuit pour pousser la sobriété énergétique au niveau supérieur.
+            ✓ Supervision départ par départ pour pousser la sobriété énergétique au niveau supérieur.
           </div>
         </div>
-
       </div>
     </section>
 
   </main>
 
-
   <!-- SCRIPT JS PRINCIPAL -->
   <script>
-    // --- 1. SYNTHÈSE SONORE D'OISEAU (WEB AUDIO API) ---
+    // --- 1. SYNTHÈSE SONORE PIANO (WEB AUDIO API) ---
     let audioCtx = null;
 
-    function playBirdChirp() {
+    function playPianoNote() {
       try {
         if (!audioCtx) {
           audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -444,42 +422,39 @@
         }
 
         const now = audioCtx.currentTime;
-
-        // Oscillateur principal pour le piaulement
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
 
-        // Modulation dynamique de fréquence pour un chant réaliste
-        const startFreq = 1800 + Math.random() * 600;
-        const midFreq = 2800 + Math.random() * 800;
-        const endFreq = 2000 + Math.random() * 500;
+        // Notes de gamme pentatonique pour un rendu harmonieux (C4 à E5)
+        const notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
+        const randomFreq = notes[Math.floor(Math.random() * notes.length)];
 
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(startFreq, now);
-        osc.frequency.exponentialRampToValueAtTime(midFreq, now + 0.06);
-        osc.frequency.exponentialRampToValueAtTime(endFreq, now + 0.14);
+        // Forme d'onde type triangle (proche d'un timbre doux type piano électrique / cloche)
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(randomFreq, now);
 
-        // Enveloppe de volume douce
+        // Enveloppe ADSR simulant la frappe d'une note de piano (attaque nette, déclin long)
         gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(0.18, now + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+        gain.gain.linearRampToValueAtTime(0.4, now + 0.02); // Attaque
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5); // Relâchement
 
         osc.connect(gain);
         gain.connect(audioCtx.destination);
 
         osc.start(now);
-        osc.stop(now + 0.15);
+        osc.stop(now + 1.5);
       } catch (err) {
         console.warn("Audio non disponible", err);
       }
     }
 
 
-    // --- 2. DONNÉES HISTORIQUES ÉNERGIE (2018 - 2026) ---
-    const years = ['2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026 (Jan-Août)'];
-    const elecData = [5794, 5690, 4378, 5240, 5514, 2901, 2918, 2776, 1810];
-    const coldData = [3613, 3412, 2448, 2536, 3121, 2759, 2820, 2921, 2171];
-    const cpcuData = [null, 3739, 3494, 4858, 3579, 2985, 3309, 2712, 1606];
+    // --- 2. DONNÉES HISTORIQUES ÉNERGIE ET EAU (2018 - 2025) ---
+    const years = ['2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'];
+    const elecData = [5794, 5690, 4378, 5240, 5514, 2901, 2918, 2776];
+    const coldData = [3613, 3412, 2448, 2536, 3121, 2759, 2820, 2921];
+    const cpcuData = [null, 3739, 3494, 4858, 3579, 2985, 3309, 2712];
+    const waterData = [16920, 14141, 13941, 9521, 12186, 12345, 12172, 14055];
 
     // Chart.js Configuration
     const ctx = document.getElementById('energyChart').getContext('2d');
@@ -495,7 +470,8 @@
             backgroundColor: 'rgba(245, 158, 11, 0.15)',
             borderWidth: 3,
             tension: 0.3,
-            fill: true
+            fill: true,
+            yAxisID: 'yEnergy'
           },
           {
             label: 'Fraîcheur de Paris (MWh)',
@@ -503,7 +479,8 @@
             borderColor: '#06b6d4',
             backgroundColor: 'rgba(6, 182, 212, 0.1)',
             borderWidth: 2,
-            tension: 0.3
+            tension: 0.3,
+            yAxisID: 'yEnergy'
           },
           {
             label: 'CPCU Chauffage (MWh)',
@@ -511,7 +488,18 @@
             borderColor: '#ef4444',
             backgroundColor: 'rgba(239, 68, 68, 0.1)',
             borderWidth: 2,
-            tension: 0.3
+            tension: 0.3,
+            yAxisID: 'yEnergy'
+          },
+          {
+            label: 'Eau (m³)',
+            data: waterData,
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            borderWidth: 2,
+            borderDash: [5, 5], // Style pointillé pour différencier l'eau
+            tension: 0.3,
+            yAxisID: 'yWater'
           }
         ]
       },
@@ -522,62 +510,83 @@
           legend: { labels: { color: '#d4d4d8', font: { family: 'Montserrat' } } }
         },
         scales: {
-          x: { ticks: { color: '#a1a1aa' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-          y: { ticks: { color: '#a1a1aa' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+          x: { 
+            ticks: { color: '#a1a1aa' }, 
+            grid: { color: 'rgba(255,255,255,0.05)' } 
+          },
+          yEnergy: { 
+            type: 'linear',
+            display: true,
+            position: 'left',
+            title: { display: true, text: 'Énergie (MWh)', color: '#a1a1aa' },
+            ticks: { color: '#a1a1aa' }, 
+            grid: { color: 'rgba(255,255,255,0.05)' } 
+          },
+          yWater: { 
+            type: 'linear',
+            display: true,
+            position: 'right',
+            title: { display: true, text: 'Eau (m³)', color: '#3b82f6' },
+            ticks: { color: '#3b82f6' }, 
+            grid: { drawOnChartArea: false } // Empêche le chevauchement des lignes de grille
+          }
         }
       }
     });
 
 
-    // --- 3. DÉCORATION : LES 8 FORMES D'OISEAUX AVEC ILLUMINATION ET SON ---
-    const official8Birds = [
-      "M 20 80 L 50 15 L 80 80 L 50 60 Z",
-      "M 10 50 Q 30 10 50 40 Q 70 10 90 50 Q 50 70 10 50 Z",
-      "M 15 70 L 50 15 L 65 45 L 85 30 L 55 85 Z",
-      "M 10 40 L 45 20 L 60 50 L 90 25 L 50 80 Z",
-      "M 20 60 L 50 10 L 80 50 L 60 55 L 50 90 L 40 55 Z",
-      "M 10 75 L 40 25 L 70 50 L 90 20 L 55 85 Z",
-      "M 15 35 L 50 15 L 85 35 L 65 65 L 50 90 L 35 65 Z",
-      "M 10 65 L 35 20 L 60 45 L 90 15 L 60 80 Z"
+    // --- 3. DÉCORATION : LES 30 OISEAUX INDÉPENDANTS (IMAGES SVG) ---
+    // Correspond aux fichiers 01.svg à 08.svg du dépôt
+    const svgFiles = [
+      '01.svg', '02.svg', '03.svg', '04.svg', 
+      '05.svg', '06.svg', '07.svg', '08.svg'
     ];
-
-    const birdColors = ['#d4af37', '#e2e8f0', '#94a3b8', '#cbd5e1', '#f59e0b'];
 
     function renderDecorBirds() {
       const birdLayer = document.getElementById('birdLayer');
       birdLayer.innerHTML = '';
 
-      for (let i = 0; i < 26; i++) {
+      // Générer environ 32 oiseaux (4 exemplaires de chacune des 8 formes)
+      for (let i = 0; i < 32; i++) {
         let x = Math.random() * 88 + 6;
         let y = Math.random() * 80 + 10;
 
+        // Éviter le centre (où se trouve le texte principal)
         if (x > 25 && x < 75 && y > 25 && y < 75) {
           x = x < 50 ? x - 22 : x + 22;
         }
 
-        const birdPath = official8Birds[i % official8Birds.length];
-        const color = birdColors[i % birdColors.length];
+        const file = svgFiles[i % svgFiles.length];
         const delay = (Math.random() * 4).toFixed(1);
 
-        const svgNode = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        svgNode.setAttribute("viewBox", "0 0 100 100");
-        svgNode.setAttribute("class", "bird-svg");
-        svgNode.style.left = `${x}%`;
-        svgNode.style.top = `${y}%`;
-        svgNode.style.animationDelay = `${delay}s`;
+        const imgNode = document.createElement("img");
+        imgNode.setAttribute("src", file);
+        imgNode.setAttribute("class", "bird-svg");
+        imgNode.setAttribute("alt", "Oiseau géométrique");
+        
+        imgNode.style.left = `${x}%`;
+        imgNode.style.top = `${y}%`;
+        imgNode.style.animationDelay = `${delay}s`;
 
-        const pathNode = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        pathNode.setAttribute("d", birdPath);
-        pathNode.setAttribute("fill", color);
-
-        svgNode.appendChild(pathNode);
-
-        // Déclenchement du chant d'oiseau au passage du curseur
-        svgNode.addEventListener('mouseenter', () => {
-          playBirdChirp();
+        // Gestion de l'interaction (Souris / Tactile)
+        // L'effet lumineux (hover) est géré en CSS via .bird-svg:hover et la classe .touch-active
+        
+        // Souris
+        imgNode.addEventListener('pointerenter', () => {
+          playPianoNote();
         });
 
-        birdLayer.appendChild(svgNode);
+        // Appareils Tactiles (iPhone / Android)
+        imgNode.addEventListener('touchstart', (e) => {
+          playPianoNote();
+          // Active manuellement le style d'illumination sur mobile
+          imgNode.classList.add('touch-active');
+          setTimeout(() => {
+            imgNode.classList.remove('touch-active');
+          }, 1200); 
+        }, { passive: true });
+
+        birdLayer.appendChild(imgNode);
       }
     }
 
