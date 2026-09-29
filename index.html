@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Philharmonie : Le Bâtiment</title>
+  <title>Philharmonie de Paris : Le Bâtiment</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Composant Model-Viewer pour la 3D -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 
   <style>
@@ -14,7 +15,7 @@
     
     .hero-container {
       position: relative;
-      height: 70vh;
+      height: 75vh;
       min-height: 500px;
       display: flex;
       flex-direction: column;
@@ -25,7 +26,7 @@
     }
 
     .hero-title {
-      font-size: clamp(2.5rem, 8vw, 6rem);
+      font-size: clamp(2.5rem, 7vw, 5.5rem);
       font-weight: 800;
       text-align: center;
       line-height: 1.1;
@@ -74,6 +75,7 @@
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255,255,255,0.05);
       border-radius: 1rem;
+      overflow: hidden;
     }
     
     model-viewer {
@@ -83,89 +85,133 @@
 </head>
 <body class="antialiased">
 
+  <!-- EN-TÊTE ET OISEAUX -->
   <header class="hero-container" id="hero">
     <div class="absolute top-6 z-20 px-4 py-2 rounded-full border border-yellow-500/30 bg-yellow-500/10 text-yellow-500 text-xs md:text-sm font-semibold flex items-center gap-2 backdrop-blur-md">
       <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
       Survolez (ou touchez) les oiseaux de façade
     </div>
     
-    <h1 class="hero-title">Philharmonie<br><span class="font-light text-gray-300 -webkit-text-fill-color-initial">Le Bâtiment</span></h1>
+    <h1 class="hero-title">Philharmonie de Paris<br><span class="font-light text-gray-300 -webkit-text-fill-color-initial">Le Bâtiment</span></h1>
     
     <div class="bird-layer" id="birdLayer"></div>
   </header>
 
-  <section class="w-full max-w-7xl mx-auto px-4 md:px-8 py-16">
-    <div class="mb-8 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-4">
-      <div>
-        <h2 class="text-2xl md:text-4xl font-bold text-white mb-2">Immersion 3D</h2>
+  <main class="w-full max-w-7xl mx-auto px-4 md:px-8 py-16 space-y-24">
+    
+    <!-- SECTION 1 : MODÈLE 3D -->
+    <section>
+      <div class="mb-8 text-center md:text-left">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Immersion 3D Structurale</h2>
         <p class="text-gray-400 text-sm md:text-base max-w-xl">
-          Tournez à 360°, zoomez à l'intérieur. <br class="hidden md:block">
-          <span class="text-yellow-500 font-semibold">PC :</span> Clic droit pour déplacer la caméra.<br class="hidden md:block">
-          <span class="text-yellow-500 font-semibold">Mobile :</span> 2 doigts pour déplacer la caméra.
+          Navigation libre à 360°. Utilisez la souris ou l'écran tactile pour explorer tous les angles du bâtiment.
         </p>
       </div>
-    </div>
 
-    <div class="glass-panel p-2 shadow-2xl relative w-full">
-      <model-viewer 
-        src="philharmonie.glb" 
-        alt="Modèle 3D complet de la Philharmonie de Paris" 
-        camera-controls 
-        auto-rotate 
-        rotation-per-second="20deg"
-        bounds="tight"
-        camera-orbit="-30deg 60deg 75%"
-        min-camera-orbit="-infinity -infinity auto"
-        max-camera-orbit="infinity infinity auto"
-        min-field-of-view="10deg"
-        shadow-intensity="1.2" 
-        exposure="1.1"
-        environment-image="neutral"
-        interaction-prompt="always"
-        class="w-full h-[60vh] md:h-[80vh] rounded-xl bg-[#0d0d12]">
-        
-        <div slot="poster" class="absolute inset-0 flex items-center justify-center bg-[#0d0d12] rounded-xl text-gray-400 flex-col gap-4">
-          <svg class="w-12 h-12 animate-spin text-yellow-500" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-          <p class="text-sm md:text-base px-4 text-center">Génération de la structure spatiale...</p>
-        </div>
-      </model-viewer>
-    </div>
-  </section>
+      <div class="glass-panel p-2 shadow-2xl relative w-full">
+        <!-- 
+          CORRECTIONS 3D APPORTÉES :
+          1. orientation="-90deg 0 0" : Redresse le modèle (bascule l'axe X de 90 degrés). 
+             Si le modèle pointe toujours vers le bas, essayez "90deg 0 0" ou "0 0 90deg".
+          2. Suppression des contraintes "min/max-camera-orbit" : rotation 100% libre, plus de blocage !
+        -->
+        <model-viewer 
+          src="philharmonie.glb" 
+          alt="Modèle 3D complet de la Philharmonie de Paris" 
+          camera-controls 
+          auto-rotate 
+          rotation-per-second="20deg"
+          orientation="-90deg 0 0" 
+          shadow-intensity="1.2" 
+          exposure="1.1"
+          environment-image="neutral"
+          interaction-prompt="always"
+          class="w-full h-[60vh] md:h-[80vh] rounded-xl bg-[#0d0d12]">
+          
+          <div slot="poster" class="absolute inset-0 flex items-center justify-center bg-[#0d0d12] rounded-xl text-gray-400 flex-col gap-4">
+            <svg class="w-12 h-12 animate-spin text-yellow-500" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            <p class="text-sm md:text-base px-4 text-center">Génération de la structure 3D...</p>
+          </div>
+        </model-viewer>
+      </div>
+    </section>
+
+    <!-- SECTION 2 : VUE SATELLITE 2.5D -->
+    <section>
+      <div class="mb-8 text-center md:text-left">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Implantation Urbaine (2.5D)</h2>
+        <p class="text-gray-400 text-sm md:text-base max-w-xl">
+          Vue aérienne de l'intégration de la Philharmonie dans le Parc de la Villette.
+        </p>
+      </div>
+      <div class="glass-panel shadow-2xl relative w-full h-[500px]">
+        <iframe 
+          src="https://maps.google.com/maps?q=Philharmonie+de+Paris&t=k&z=18&ie=UTF8&iwloc=&output=embed" 
+          width="100%" 
+          height="100%" 
+          style="border:0;" 
+          allowfullscreen="" 
+          loading="lazy" 
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </section>
+
+    <!-- SECTION 3 : STREET VIEW GRANDE SALLE -->
+    <section>
+      <div class="mb-8 text-center md:text-left">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Au cœur de la Grande Salle</h2>
+        <p class="text-gray-400 text-sm md:text-base max-w-xl">
+          Immersion à 360° dans la salle Pierre Boulez (Modèle Vignoble).
+        </p>
+      </div>
+      <div class="glass-panel shadow-2xl relative w-full h-[600px]">
+        <!-- 
+          NOTE POUR LA STREET VIEW : 
+          Google Maps nécessite un code généré spécifiquement pour la Street View interne.
+          Si cette vue générique ne vous convient pas :
+          1. Ouvrez votre lien Google Maps de la salle.
+          2. Cliquez sur les 3 petits points (en haut à gauche) > "Partager ou intégrer l'image".
+          3. Onglet "Intégrer une carte" > Copiez le code HTML.
+          4. Remplacez le tag <iframe> ci-dessous par votre code !
+        -->
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!4v1700000000000!6m8!1m7!1sGA4yqvXG7ix0gN5TagDxNw!2m2!1d48.8917101!2d2.3942711!3f26.59!4f86.95!5f0.7820865974627469" 
+          width="100%" 
+          height="100%" 
+          style="border:0;" 
+          allowfullscreen="" 
+          loading="lazy" 
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </section>
+
+  </main>
 
   <script>
     // --- 1. MOTEUR AUDIO ---
     let audioCtx = null;
-
     function initAudio() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
+      if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+      if (audioCtx.state === 'suspended') { audioCtx.resume(); }
     }
 
     const baseNotes = [130.81, 146.83, 164.81, 196.00, 220.00, 261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25, 783.99, 880.00];
     const notes = [];
-    for(let i=0; i<50; i++) {
-      notes.push(baseNotes[i % baseNotes.length] * (1 + Math.floor(i / baseNotes.length)));
-    }
+    for(let i=0; i<50; i++) { notes.push(baseNotes[i % baseNotes.length] * (1 + Math.floor(i / baseNotes.length))); }
 
     function playNote(freq) {
       initAudio();
       if (!audioCtx) return;
-
       const now = audioCtx.currentTime;
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
-
       osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, now);
-
       gain.gain.setValueAtTime(0.0001, now);
       gain.gain.linearRampToValueAtTime(0.3, now + 0.05);
       gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.5);
-
       osc.connect(gain);
       gain.connect(audioCtx.destination);
       osc.start(now);
@@ -175,122 +221,118 @@
     document.addEventListener('click', initAudio, { once: true });
     document.addEventListener('touchstart', initAudio, { once: true });
 
-    // --- 2. IMPORTATION ET FILTRAGE DU SVG ---
+    // --- 2. GESTION BULLETPROOF DES OISEAUX ---
     const birdLayer = document.getElementById('birdLayer');
     const shades = ['#d1d5db', '#9ca3af', '#6b7280', '#4b5563', '#e5e7eb'];
 
+    // FORMES DE SECOURS (Si le SVG externe bloque)
+    const fallbackPaths = [
+      "M 35 15 L 60 20 L 55 50 L 35 80 L 20 50 L 45 40 Z", 
+      "M 5 50 L 45 60 L 55 40 L 40 10 Z",
+      "M 55 10 L 30 70 L 40 95 L 65 95 L 60 70 L 75 50 Z",
+      "M 20 45 L 45 20 L 75 30 L 60 50 L 75 75 L 30 80 Z",
+      "M 30 40 L 55 15 L 80 10 L 65 40 L 85 55 L 40 70 Z",
+      "M 30 85 L 60 40 L 50 30 L 90 15 L 85 45 L 60 55 L 75 75 Z",
+      "M 30 10 L 45 35 L 75 20 L 85 40 L 65 55 L 60 85 L 50 65 L 40 85 Z",
+      "M 25 95 L 45 50 L 35 40 L 65 20 L 95 30 L 85 60 L 55 65 Z"
+    ];
+
     async function loadAndScatterBirds() {
+      let shapesData = [];
       const hiddenDiv = document.createElement('div');
-      hiddenDiv.style.visibility = 'hidden';
-      hiddenDiv.style.position = 'absolute';
-      hiddenDiv.style.width = '0';
-      hiddenDiv.style.height = '0';
-      hiddenDiv.style.overflow = 'hidden';
+      hiddenDiv.style.display = 'none';
       document.body.appendChild(hiddenDiv);
 
       try {
-        const response = await fetch('PDP-3-AJN-DET-000-TZ-204-0401-0.svg');
-        if (!response.ok) throw new Error("Fichier SVG non trouvé");
-        
-        const svgText = await response.text();
-        hiddenDiv.innerHTML = svgText;
-        
-        const originalSvg = hiddenDiv.querySelector('svg');
-        if (!originalSvg) throw new Error("SVG invalide");
-
-        const rawShapes = Array.from(originalSvg.querySelectorAll('path, polygon'));
-        
-        const shapesData = rawShapes.map(shape => {
-          const bbox = shape.getBBox();
-          if (bbox.width === 0 || bbox.height === 0) return null;
+        // Tentative de chargement du fichier SVG externe
+        const response = await fetch('./PDP-3-AJN-DET-000-TZ-204-0401-0.svg');
+        if (response.ok) {
+          const svgText = await response.text();
+          hiddenDiv.innerHTML = svgText;
+          const originalSvg = hiddenDiv.querySelector('svg');
           
-          // FILTRE 1 : Ignorer les formes trop grandes (les cadres de fond)
-          if (bbox.width > originalSvg.viewBox.baseVal.width * 0.5) return null;
-
-          // FILTRE 2 : Analyser la complexité du tracé pour ignorer les carrés simples
-          if (shape.tagName.toLowerCase() === 'path') {
-            const d = shape.getAttribute('d');
-            // Un oiseau de Jean Nouvel a de nombreux points. Un simple rectangle a très peu de commandes.
-            const commandCount = (d.match(/[a-zA-Z]/g) || []).length;
-            if (commandCount < 6) return null; 
-          } else if (shape.tagName.toLowerCase() === 'polygon') {
-            const points = shape.getAttribute('points');
-            const pointsCount = (points.match(/,/g) || []).length;
-            if (pointsCount < 6) return null;
+          if (originalSvg) {
+            const rawShapes = Array.from(originalSvg.querySelectorAll('path, polygon'));
+            shapesData = rawShapes.map(shape => {
+              const bbox = shape.getBBox();
+              if (bbox.width === 0 || bbox.height === 0) return null;
+              // On retire la contrainte de taille qui supprimait tout
+              const clonedNode = shape.cloneNode(true);
+              clonedNode.removeAttribute('style');
+              clonedNode.removeAttribute('class');
+              clonedNode.removeAttribute('fill');
+              clonedNode.removeAttribute('opacity');
+              return {
+                isNode: true,
+                content: clonedNode.outerHTML,
+                viewBox: `${bbox.x - 2} ${bbox.y - 2} ${bbox.width + 4} ${bbox.height + 4}`
+              };
+            }).filter(data => data !== null);
           }
-
-          const clonedNode = shape.cloneNode(true);
-          
-          // NETTOYAGE : Forcer la visibilité (annule les opacités et fill="none" d'Illustrator)
-          clonedNode.removeAttribute('style');
-          clonedNode.removeAttribute('class');
-          clonedNode.removeAttribute('fill');
-          clonedNode.removeAttribute('opacity');
-          
-          return {
-            node: clonedNode,
-            viewBox: `${bbox.x - 1} ${bbox.y - 1} ${bbox.width + 2} ${bbox.height + 2}`
-          };
-        }).filter(data => data !== null);
-
-        if (shapesData.length === 0) throw new Error("Aucun oiseau valide trouvé");
-
-        for (let i = 0; i < 50; i++) {
-          let x, y;
-          let validPosition = false;
-
-          while (!validPosition) {
-            x = Math.random() * 90 + 5;
-            y = Math.random() * 90 + 5;
-            if (!(x > 20 && x < 80 && y > 30 && y < 70)) {
-              validPosition = true;
-            }
-          }
-
-          const rotation = Math.random() * 360;
-          const scale = 0.5 + Math.random() * 0.7;
-          const shade = shades[Math.floor(Math.random() * shades.length)];
-          const shapeRef = shapesData[Math.floor(Math.random() * shapesData.length)];
-          
-          const bird = document.createElement('div');
-          bird.className = 'bird-item';
-          bird.style.left = `${x}%`;
-          bird.style.top = `${y}%`;
-          bird.style.transform = `rotate(${rotation}deg) scale(${scale})`;
-          bird.dataset.origTransform = `rotate(${rotation}deg) scale(${scale})`;
-
-          // Application des couleurs "en dur" sur le noeud nettoyé
-          const finalNode = shapeRef.node.cloneNode(true);
-          finalNode.setAttribute('fill', shade);
-          finalNode.setAttribute('stroke', 'rgba(255,255,255,0.2)');
-          finalNode.setAttribute('stroke-width', '0.5');
-
-          bird.innerHTML = `
-            <svg viewBox="${shapeRef.viewBox}" width="100%" height="100%" style="overflow: visible;">
-              ${finalNode.outerHTML}
-            </svg>
-          `;
-
-          bird.addEventListener('mouseenter', () => playNote(notes[i]));
-          bird.addEventListener('mouseleave', () => bird.style.transform = bird.dataset.origTransform);
-          
-          bird.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            playNote(notes[i]);
-            bird.style.transform = `scale(${scale * 1.6}) rotate(${rotation + 10}deg)`;
-            bird.style.zIndex = 50;
-          });
-          bird.addEventListener('touchend', () => {
-            bird.style.transform = bird.dataset.origTransform;
-            bird.style.zIndex = 5;
-          });
-
-          birdLayer.appendChild(bird);
         }
       } catch (error) {
-        console.error("Erreur avec le SVG externe :", error);
+        console.warn("Impossible de charger le SVG externe, passage en mode secours.");
       } finally {
         hiddenDiv.remove();
+      }
+
+      // SI ÉCHEC DU SVG EXTERNE : Utilisation des formes de secours garanties
+      if (shapesData.length === 0) {
+        shapesData = fallbackPaths.map(path => ({
+          isNode: false,
+          content: `<path d="${path}" stroke-linejoin="round" />`,
+          viewBox: "0 0 100 100"
+        }));
+      }
+
+      // SCATTERING DES 50 OISEAUX
+      for (let i = 0; i < 50; i++) {
+        let x, y;
+        let validPosition = false;
+
+        while (!validPosition) {
+          x = Math.random() * 90 + 5;
+          y = Math.random() * 90 + 5;
+          if (!(x > 20 && x < 80 && y > 30 && y < 70)) { validPosition = true; }
+        }
+
+        const rotation = Math.random() * 360;
+        const scale = 0.5 + Math.random() * 0.7;
+        const shade = shades[Math.floor(Math.random() * shades.length)];
+        const shapeRef = shapesData[Math.floor(Math.random() * shapesData.length)];
+        
+        const bird = document.createElement('div');
+        bird.className = 'bird-item';
+        bird.style.left = `${x}%`;
+        bird.style.top = `${y}%`;
+        bird.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+        bird.dataset.origTransform = `rotate(${rotation}deg) scale(${scale})`;
+
+        // Injection du code SVG interne
+        const coloredContent = shapeRef.content
+          .replace('<path', `<path fill="${shade}" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"`)
+          .replace('<polygon', `<polygon fill="${shade}" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"`);
+
+        bird.innerHTML = `
+          <svg viewBox="${shapeRef.viewBox}" width="100%" height="100%" style="overflow: visible;">
+            ${coloredContent}
+          </svg>
+        `;
+
+        bird.addEventListener('mouseenter', () => playNote(notes[i]));
+        bird.addEventListener('mouseleave', () => bird.style.transform = bird.dataset.origTransform);
+        bird.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          playNote(notes[i]);
+          bird.style.transform = `scale(${scale * 1.6}) rotate(${rotation + 10}deg)`;
+          bird.style.zIndex = 50;
+        });
+        bird.addEventListener('touchend', () => {
+          bird.style.transform = bird.dataset.origTransform;
+          bird.style.zIndex = 5;
+        });
+
+        birdLayer.appendChild(bird);
       }
     }
 
