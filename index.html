@@ -34,18 +34,40 @@
       pointer-events: none;
     }
 
+    /* Titre & Sous-titre avec contour adaptatif Jour/Nuit ultra-fin et fluide */
+    .hero-title, .hero-subtitle {
+      /* De JOUR : Contour noir net et subtil halo d'ombrage pour faire ressortir le lettrage */
+      text-shadow: 
+        -1px -1px 0 rgba(0, 0, 0, 0.9),  
+         1px -1px 0 rgba(0, 0, 0, 0.9),
+        -1px  1px 0 rgba(0, 0, 0, 0.9),
+         1px  1px 0 rgba(0, 0, 0, 0.9),
+         0 2px 8px rgba(0, 0, 0, 0.6);
+      transition: text-shadow 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* De NUIT : Contour blanc soyeux et halo clair feutré */
+    .is-night-mode .hero-title,
+    .is-night-mode .hero-subtitle {
+      text-shadow: 
+        -1px -1px 0 rgba(255, 255, 255, 0.95),  
+         1px -1px 0 rgba(255, 255, 255, 0.95),
+        -1px  1px 0 rgba(255, 255, 255, 0.95),
+         1px  1px 0 rgba(255, 255, 255, 0.95),
+         0 0 12px rgba(255, 255, 255, 0.7);
+    }
+
     .hero-title {
       font-size: clamp(2.2rem, 5vw, 4.5rem);
       font-weight: 800;
       text-align: center;
       line-height: 1.1;
-      /* Le texte pur blanc avec mix-blend-mode: difference créera le négatif parfait */
     }
 
     .hero-subtitle {
       font-size: clamp(1.125rem, 2vw, 1.5rem);
-      font-weight: 300;
-      letter-spacing: 0.025em;
+      font-weight: 400;
+      letter-spacing: 0.03em;
     }
 
     /* Transition fluide du fond de nuit */
@@ -114,9 +136,7 @@
   <header class="hero-container" id="hero">
     
     <!-- Fonds dynamiques Jour/Nuit -->
-    <!-- Image de jour (toujours visible en fond) -->
     <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat" style="background-image: url('37813204802_db32vxcecb_b (1).jpg');"></div>
-    <!-- Image de nuit (apparaît en fondu par-dessus) -->
     <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat bg-night-layer" style="background-image: url('37813204802_db32b07ecb_b (1).jpg');"></div>
 
     <!-- Tag informatif -->
@@ -125,7 +145,7 @@
       Motifs décoratifs : Survolez ou touchez les oiseaux (Son & Lumière progressive)
     </div>
 
-    <!-- Titre Principal avec effet Négatif (Difference) -->
+    <!-- Titre Principal avec effet Négatif + Contour Noir/Blanc adaptatif -->
     <div class="negative-text-blend text-center px-4 my-auto space-y-3">
       <h1 class="hero-title">La Philharmonie de Paris :<br>Le bâtiment & l'énergie</h1>
       <p class="hero-subtitle">
@@ -555,7 +575,6 @@
       const heroSection = document.getElementById('hero');
       birdLayer.innerHTML = '';
 
-      // Générer les oiseaux
       for (let i = 0; i < 32; i++) {
         let x = Math.random() * 88 + 6;
         let y = Math.random() * 80 + 10;
@@ -576,9 +595,7 @@
         imgNode.style.top = `${y}%`;
         imgNode.style.animationDelay = `${delay}s`;
 
-        // Gestion du déclenchement de la version "Nuit" au survol/toucher
-        
-        // --- Souris (Desktop) ---
+        // Gestion de l'inversion jour/nuit + son au survol/toucher
         imgNode.addEventListener('mouseenter', () => {
           playPianoNote();
           heroSection.classList.add('is-night-mode');
@@ -588,7 +605,6 @@
           heroSection.classList.remove('is-night-mode');
         });
 
-        // --- Tactile (Mobile) ---
         imgNode.addEventListener('touchstart', (e) => {
           playPianoNote();
           imgNode.classList.add('touch-active');
