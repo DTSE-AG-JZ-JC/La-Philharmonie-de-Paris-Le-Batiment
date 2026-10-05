@@ -1,1355 +1,1279 @@
 <!DOCTYPE html>
+
 <html lang="fr" class="scroll-smooth bg-[#0a0a0c]">
+
 <head>
+
   <meta charset="UTF-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>La Philharmonie de Paris : Le bâtiment & l'énergie</title>
 
+
+
   <!-- Tailwind CSS, Chart.js & Model-Viewer -->
+
   <script src="https://cdn.tailwindcss.com"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 
+
+
   <style>
+
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+
     body { font-family: 'Montserrat', sans-serif; color: #f4f4f5; overflow-x: hidden; }
 
+
+
     /* Hero & Décorations Oiseaux */
+
     .hero-container {
+
       position: relative;
+
       min-height: 75vh;
+
       display: flex;
+
       flex-direction: column;
+
       align-items: center;
+
       justify-content: center;
+
       overflow: hidden;
+
       background-color: #0a0a0c;
+
     }
+
+
 
     /* Container du texte central */
+
     .hero-text-wrap {
+
       position: relative;
+
       z-index: 10;
+
       pointer-events: none;
+
       text-align: center;
+
       padding: 0 1rem;
+
     }
+
+
 
     /* --- GESTION DU TITRE & SOUS-TITRE (JOUR / NUIT) --- */
+
     .hero-title, .hero-subtitle {
+
       /* Transition douce sur la couleur de remplissage, le contour et l'ombre */
+
       transition: color 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+
                   -webkit-text-stroke 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+
                   text-shadow 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+
     }
+
+
 
     /* ÉTAT DE JOUR : FULL BLANC + CONTOUR NOIR ÉPAIS */
+
     .hero-title {
+
       font-size: clamp(2.2rem, 5vw, 4.5rem);
+
       font-weight: 800;
+
       line-height: 1.1;
+
       color: #ffffff;
+
       text-shadow: 
+
         -2px -2px 0 #000000,
+
          2px -2px 0 #000000,
+
         -2px  2px 0 #000000,
+
          2px  2px 0 #000000,
+
         -2px  0   0 #000000,
+
          2px  0   0 #000000,
+
          0   -2px 0 #000000,
+
          0    2px 0 #000000,
+
          0    4px 14px rgba(0, 0, 0, 0.8);
+
     }
+
+
 
     .hero-subtitle {
+
       font-size: clamp(1.125rem, 2vw, 1.5rem);
+
       font-weight: 700;
+
       letter-spacing: 0.04em;
+
       color: #ffffff;
+
       text-shadow: 
+
         -1.5px -1.5px 0 #000000,
+
          1.5px -1.5px 0 #000000,
+
         -1.5px  1.5px 0 #000000,
+
          1.5px  1.5px 0 #000000,
+
          0      3px 8px rgba(0, 0, 0, 0.8);
+
     }
+
+
 
     /* ÉTAT DE NUIT : FULL NOIR + CONTOUR BLANC ÉPAIS */
+
     .is-night-mode .hero-title {
+
       color: #060608;
+
       text-shadow: 
+
         -2px -2px 0 #ffffff,
+
          2px -2px 0 #ffffff,
+
         -2px  2px 0 #ffffff,
+
          2px  2px 0 #ffffff,
+
         -2px  0   0 #ffffff,
+
          2px  0   0 #ffffff,
+
          0   -2px 0 #ffffff,
+
          0    2px 0 #ffffff,
+
          0    0   20px rgba(255, 255, 255, 0.9);
+
     }
+
+
 
     .is-night-mode .hero-subtitle {
+
       color: #060608;
+
       text-shadow: 
+
         -1.5px -1.5px 0 #ffffff,
+
          1.5px -1.5px 0 #ffffff,
+
         -1.5px  1.5px 0 #ffffff,
+
          1.5px  1.5px 0 #ffffff,
+
          0      0   14px rgba(255, 255, 255, 0.9);
+
     }
+
     
+
     /* Transition fluide du fond de nuit */
+
     .bg-night-layer {
+
       opacity: 0;
+
       transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+
     }
+
     
+
     /* Déclencheur du fondu vers la nuit */
+
     .is-night-mode .bg-night-layer {
+
       opacity: 1;
+
     }
+
+
 
     .bird-layer {
+
       position: absolute;
+
       inset: 0;
+
       z-index: 15;
+
       pointer-events: auto;
+
     }
+
+
 
     /* Animation douce pour les oiseaux & Illumination */
+
     .bird-png {
+
       position: absolute;
+
       width: clamp(40px, 5vw, 70px);
+
       height: clamp(40px, 5vw, 70px);
+
       opacity: 0.85; 
+
       cursor: pointer;
+
       mix-blend-mode: normal; 
+
       transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+
                   opacity 0.5s ease, 
+
                   filter 0.5s ease;
+
       animation: floatBird 6s infinite ease-in-out alternate;
+
     }
+
+
 
     .bird-png:hover, .bird-png.touch-active {
+
       opacity: 1;
+
       transform: scale(1.4) translateY(-8px) !important;
+
       filter: drop-shadow(0 0 18px rgba(250, 204, 21, 0.95)) brightness(1.6) sepia(1) hue-rotate(-30deg) saturate(5);
+
     }
+
+
 
     @keyframes floatBird {
+
       0% { transform: translateY(0px) rotate(0deg); }
+
       100% { transform: translateY(-12px) rotate(2deg); }
+
     }
+
+
 
     .glass-panel {
+
       background: rgba(18, 18, 24, 0.75);
+
       backdrop-filter: blur(14px);
+
       border: 1px solid rgba(255, 255, 255, 0.08);
+
       border-radius: 1.25rem;
+
     }
 
+
+
     model-viewer {
+
       width: 100%;
+
       height: 100%;
+
       --poster-color: transparent;
+
       background-color: rgba(0, 0, 0, 0.3);
+
       border-radius: 1rem;
+
     }
+
   </style>
+
 </head>
+
 <body class="antialiased bg-[#0a0a0c] text-zinc-100">
 
+
+
   <!-- HERO SECTION -->
+
   <header class="hero-container" id="hero">
+
     
+
     <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat" style="background-image: url('37813204802_db32vxcecb_b (1).jpg');"></div>
+
     <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat bg-night-layer" style="background-image: url('37813204802_db32b07ecb_b (1).jpg');"></div>
 
+
+
     <div class="absolute top-6 z-20 px-5 py-2 rounded-full border border-yellow-500/30 bg-black/60 text-yellow-400 text-xs md:text-sm font-semibold flex items-center gap-2 backdrop-blur-md shadow-lg">
+
       <span class="w-2.5 h-2.5 rounded-full bg-yellow-400 animate-pulse"></span>
+
       Motifs décoratifs : Survolez ou touchez les oiseaux (Son & Lumière)
+
     </div>
+
+
 
     <div class="hero-text-wrap my-auto space-y-3">
+
       <h1 class="hero-title">La Philharmonie de Paris :<br>Le bâtiment & l'énergie</h1>
+
     </div>
 
+
+
     <div class="bird-layer" id="birdLayer"></div>
+
   </header>
+
+
 
   <main class="w-full max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-24">
 
+
+
     <!-- SECTION 1 : CHIFFRES CLÉS & MODÈLE 3D / MAPS -->
+
     <section class="space-y-10">
+
       <div class="border-l-4 border-yellow-500 pl-4">
+
         <h2 class="text-3xl md:text-4xl font-extrabold text-white">1. Introduction & Chiffres Clés</h2>
+
         <p class="text-zinc-400 text-sm md:text-base mt-1">L'édifice d'exception conçu par les Ateliers Jean Nouvel.</p>
+
       </div>
+
+
 
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+
         <div class="glass-panel p-5 text-center hover:border-yellow-500/40 transition">
+
           <div class="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Surface Utile / Brute</div>
+
           <div class="text-2xl md:text-3xl font-bold text-yellow-400 mt-1">42k / 90k m²</div>
+
           <div class="text-xs text-zinc-500 mt-1">Surface utile 42 000 m² • Brute 85k-90k m²</div>
+
         </div>
+
         <div class="glass-panel p-5 text-center hover:border-yellow-500/40 transition">
+
           <div class="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Hauteur & Belvédère</div>
+
           <div class="text-2xl md:text-3xl font-bold text-yellow-400 mt-1">52m / 37m</div>
+
           <div class="text-xs text-zinc-500 mt-1">Hauteur totale 52m • Belvédère à 37m</div>
+
         </div>
+
         <div class="glass-panel p-5 text-center hover:border-yellow-500/40 transition">
+
           <div class="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Grande Salle Pierre Boulez</div>
+
           <div class="text-2xl md:text-3xl font-bold text-yellow-400 mt-1">30 000 m³</div>
+
           <div class="text-xs text-zinc-500 mt-1">2400 assises / 3500 (assis + fosse)</div>
+
         </div>
+
         <div class="glass-panel p-5 text-center hover:border-yellow-500/40 transition">
+
           <div class="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Architecture</div>
+
           <div class="text-xl md:text-2xl font-bold text-white mt-1">Ateliers Jean Nouvel</div>
+
           <div class="text-xs text-zinc-500 mt-1">Béton, acier & enveloppe aluminium</div>
+
         </div>
+
       </div>
 
+
+
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="glass-panel p-4 flex flex-col h-[450px] shadow-2xl relative">
-          <div class="flex items-center justify-between mb-3 px-2">
-            <span class="text-xs font-semibold text-yellow-400 flex items-center gap-2">
-              🧊 Modèle 3D Interactif du Bâtiment
-            </span>
-            <span class="text-[10px] text-zinc-400">Pincez / Tournez pour naviguer</span>
-          </div>
-          <div class="flex-1 overflow-hidden rounded-xl">
-            <model-viewer 
-              src="philharmonie.glb" 
-              alt="Modèle 3D Philharmonie de Paris" 
-              auto-rotate 
-              camera-controls 
-              shadow-intensity="1">
-            </model-viewer>
-          </div>
-        </div>
 
         <div class="glass-panel p-4 flex flex-col h-[450px] shadow-2xl relative">
+
           <div class="flex items-center justify-between mb-3 px-2">
+
             <span class="text-xs font-semibold text-yellow-400 flex items-center gap-2">
-              🗺️ Vue 2.5D & Implantation Street View
+
+              🧊 Modèle 3D Interactif du Bâtiment
+
             </span>
-            <span class="text-[10px] text-zinc-400">Parc de la Villette, Paris 19e</span>
+
+            <span class="text-[10px] text-zinc-400">Pincez / Tournez pour naviguer</span>
+
           </div>
+
           <div class="flex-1 overflow-hidden rounded-xl">
+
+            <model-viewer 
+
+              src="philharmonie.glb" 
+
+              alt="Modèle 3D Philharmonie de Paris" 
+
+              auto-rotate 
+
+              camera-controls 
+
+              shadow-intensity="1">
+
+            </model-viewer>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="glass-panel p-4 flex flex-col h-[450px] shadow-2xl relative">
+
+          <div class="flex items-center justify-between mb-3 px-2">
+
+            <span class="text-xs font-semibold text-yellow-400 flex items-center gap-2">
+
+              🗺️ Vue 2.5D & Implantation Street View
+
+            </span>
+
+            <span class="text-[10px] text-zinc-400">Parc de la Villette, Paris 19e</span>
+
+          </div>
+
+          <div class="flex-1 overflow-hidden rounded-xl">
+
             <iframe 
+
               src="https://www.google.com/maps/embed?pb=!4v1700000000000!6m8!1m7!1sGA4yqvXG7ix0gN5TagDxNw!2m2!1d48.8917101!2d2.3942711!3f26.59!4f0deg!5f0.7820865974627469" 
+
               width="100%" 
+
               height="100%" 
+
               style="border:0;" 
+
               allowfullscreen="" 
+
               loading="lazy" 
+
               referrerpolicy="no-referrer-when-downgrade">
+
             </iframe>
+
           </div>
+
         </div>
+
       </div>
+
     </section>
+
+
 
     <!-- SECTION 2 : ANATOMIE DU BÂTIMENT & GTB -->
+
     <section class="space-y-8">
+
       <div class="border-l-4 border-yellow-500 pl-4">
+
         <h2 class="text-3xl md:text-4xl font-extrabold text-white">2. L'Anatomie du Bâtiment (Comment ça marche ?)</h2>
+
         <p class="text-zinc-400 text-sm md:text-base mt-1">Réseaux urbains centralisés et supervision GTB en temps réel.</p>
+
       </div>
+
+
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
         <div class="glass-panel p-6 space-y-4">
+
           <div class="flex items-center gap-3">
+
             <div class="p-3 bg-yellow-500/10 rounded-xl text-yellow-400 text-xl">⚡</div>
+
             <h3 class="text-xl font-bold text-white">Les Réseaux Urbains</h3>
+
           </div>
+
           <p class="text-sm text-zinc-300 leading-relaxed">
+
             Afin d'assurer le confort thermique et la climatisation du bâtiment sans utiliser de groupes frigorifiques autonomes volumineux, la Philharmonie est directement raccordée aux réseaux urbains parisiens :
+
           </p>
+
           <ul class="space-y-3 text-xs md:text-sm text-zinc-400">
+
             <li class="flex items-start gap-2">
+
               <span class="text-red-400 font-bold">●</span>
+
               <span><strong class="text-zinc-200">CPCU (Chauffage Urbain) :</strong> Alimentation en vapeur chaude pour le chauffage des espaces et l'humidification contrôlée de l'air.</span>
+
             </li>
+
             <li class="flex items-start gap-2">
+
               <span class="text-cyan-400 font-bold">●</span>
+
               <span><strong class="text-zinc-200">Fraîcheur de Paris (Froid Urbain) :</strong> Distribution d'eau glacée pour le rafraîchissement des salles de concert, des studios et des locaux techniques.</span>
+
             </li>
+
             <li class="flex items-start gap-2">
+
               <span class="text-blue-400 font-bold">●</span>
+
               <span><strong class="text-zinc-200">Réseau d'Eau :</strong> Alimentation et gestion centralisée des fluides optimisée.</span>
+
             </li>
+
           </ul>
+
         </div>
+
+
 
         <div class="glass-panel p-6 space-y-4">
+
           <div class="flex items-center justify-between">
+
             <div class="flex items-center gap-3">
+
               <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 text-xl">🖥</div>
+
               <h3 class="text-xl font-bold text-white">Cœur Électrique & Supervision GTB</h3>
+
             </div>
+
             <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-full border border-emerald-500/30 font-mono">GTB ACTIF</span>
+
           </div>
 
-          <div class="rounded-xl overflow-hidden border border-white/10 shadow-lg mt-4 group">
-            <img src="image_05fd61.png" alt="Page d'accueil de la GTB de la Philharmonie de Paris" class="w-full object-cover zoomable cursor-zoom-in hover:opacity-80 transition duration-300">
+
+
+          <div class="rounded-xl overflow-hidden border border-white/10 shadow-lg mt-4">
+
+            <img src="ctaaa.jpg" alt="Page d'accueil de la GTB de la Philharmonie de Paris" class="w-full object-cover">
+
           </div>
+
           
-          <p class="text-xs text-zinc-400 italic">Page d'accueil de la gestion technique du bâtiment affichant nos CTA et les informations générales en temps réel. Cliquez pour agrandir.</p>
+
+          <p class="text-xs text-zinc-400 italic">Page d'accueil de la gestion technique du bâtiment affichant nos CTA et les informations générales en temps réel.</p>
+
         </div>
+
       </div>
+
     </section>
+
+
 
     <!-- SECTION 3 : MAINTIEN DU CLIMAT -->
+
     <section class="space-y-8">
+
       <div class="border-l-4 border-yellow-500 pl-4">
+
         <h2 class="text-3xl md:text-4xl font-extrabold text-white">3. Le Maintien du Climat : Une Contrainte Artistique</h2>
+
         <p class="text-zinc-400 text-sm md:text-base mt-1">Protéger le bois, les cordes et les mécanismes précieux des instruments.</p>
+
       </div>
+
+
 
       <div class="glass-panel p-6 md:p-8 space-y-8">
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
           <div class="p-4 bg-white/5 rounded-xl border border-white/5 space-y-2">
+
             <h4 class="text-yellow-400 font-bold text-base">🎻 Hygrométrie de Précision</h4>
+
             <p class="text-xs text-zinc-300 leading-relaxed">
+
               Tolérance de variation d'humidité strictement contrôlée pour éviter le dessèchement ou la déformation du bois des instruments patrimoniaux et de collection.
+
             </p>
+
           </div>
+
           <div class="p-4 bg-white/5 rounded-xl border border-white/5 space-y-2">
+
             <h4 class="text-yellow-400 font-bold text-base">🎹 Pianos de Concert</h4>
+
             <p class="text-xs text-zinc-300 leading-relaxed">
-              Les pianos de concert conservés en réserve nécessitent une stabilité de température et d'hygrométrie constante avant leur installation sur scène.
-            </p>
-          </div>
-          <div class="p-4 bg-white/5 rounded-xl border border-white/5 space-y-2">
-            <h4 class="text-yellow-400 font-bold text-base">🎼 L'Orgue</h4>
-            <p class="text-xs text-zinc-300 leading-relaxed">
-              L'orgue intégré à la grande salle est composé de milliers de tuyaux extrêmement sensibles aux écarts thermiques, influençant directement la justesse de l'accordage.
-            </p>
-          </div>
-        </div>
 
-        <div class="relative rounded-2xl overflow-hidden h-80 shadow-2xl border border-white/10 group">
-          <img 
-            src="Piano_Paris_wbp.webp" 
-            alt="Pianos de concert en réserve régulée" 
-            class="w-full h-full object-cover group-hover:scale-105 transition duration-700 zoomable cursor-zoom-in"
-          >
-          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex items-end p-6 pointer-events-none">
-            <div>
-              <span class="text-xs text-yellow-400 font-semibold tracking-wider uppercase">Ateliers & Réserves</span>
-              <h3 class="text-xl font-bold text-white">Ateliers et espaces de stockage des pianos de concert</h3>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 4 : BILAN ÉNERGÉTIQUE -->
-    <section class="space-y-10">
-      <div class="border-l-4 border-yellow-500 pl-4">
-        <h2 class="text-3xl md:text-4xl font-extrabold text-white">4. Bilan Énergétique : La Chasse au Gaspillage (2022 - 2025)</h2>
-        <p class="text-zinc-400 text-sm md:text-base mt-1">Évolution des consommations et actions d'efficacité énergétique.</p>
-      </div>
-
-      <div class="glass-panel p-6 md:p-8 space-y-6 shadow-2xl">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h3 class="text-xl font-bold text-white">Historique des Consommations</h3>
-            <p class="text-xs text-zinc-400">Données de 2018 à 2025</p>
-          </div>
-          <div class="flex flex-wrap gap-2 text-xs">
-            <span class="px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full border border-amber-500/30">⚡ Électricité (MWh)</span>
-            <span class="px-3 py-1 bg-cyan-500/20 text-cyan-300 rounded-full border border-cyan-500/30">❄️ Fraîcheur (MWh)</span>
-            <span class="px-3 py-1 bg-red-500/20 text-red-300 rounded-full border border-red-500/30">🔥 CPCU (MWh)</span>
-            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/30">💧 Eau (m³)</span>
-          </div>
-        </div>
-
-        <div class="relative h-[380px] w-full">
-          <canvas id="energyChart"></canvas>
-        </div>
-
-        <div class="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-300 text-xs md:text-sm flex items-center gap-3">
-          <span class="text-xl">📉</span>
-          <div>
-            <strong>Synthèse de sobriété :</strong> Chute marquée des consommations électriques, passant de plus de <strong>5 500 MWh/an</strong> à moins de <strong>2 800 MWh/an</strong> entre 2022 et 2025 grâce aux mesures d'optimisation engagées. L'eau reste optimisée annuellement.
-          </div>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="glass-panel p-6 space-y-3">
-          <div class="text-yellow-400 text-xl font-bold">01. Relamping LED Massif</div>
-          <p class="text-xs text-zinc-400">Réalisé fin 2025</p>
-          <p class="text-xs text-zinc-300 leading-relaxed">
-            Passage intégral en éclairage LED pour les projecteurs scéniques, les espaces publics et l'illumination architecturale.
-          </p>
-        </div>
-        <div class="glass-panel p-6 space-y-3">
-          <div class="text-yellow-400 text-xl font-bold">02. Détecteurs de Présence</div>
-          <p class="text-xs text-zinc-400">Déploiement 2025</p>
-          <p class="text-xs text-zinc-300 leading-relaxed">
-            Installation de capteurs intelligents dans l'ensemble des zones d'occupation intermittente et circulations techniques.
-          </p>
-        </div>
-        <div class="glass-panel p-6 space-y-3">
-          <div class="text-yellow-400 text-xl font-bold">03. Optimisation GTB</div>
-          <p class="text-xs text-zinc-400">Programmation Stricte</p>
-          <p class="text-xs text-zinc-300 leading-relaxed">
-            Ajustement fin du fonctionnement des centrales de traitement d'air (CTA) et des éclairages selon l'occupation réelle des salles.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 5 : CAP VERS L'AVENIR -->
-    <section class="space-y-8">
-      <div class="border-l-4 border-yellow-500 pl-4">
-        <h2 class="text-3xl md:text-4xl font-extrabold text-white">5. Cap vers l'Avenir : L'Énergie de Demain</h2>
-        <p class="text-zinc-400 text-sm md:text-base mt-1">Smart grid interne et projets d'autoconsommation.</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        
-        <!-- Carte 1 : Photovoltaïque -->
-        <div class="glass-panel p-6 space-y-4 border-l-2 border-yellow-500 flex flex-col">
-          <h3 class="text-xl font-bold text-white flex items-center gap-2">☀️ Le Projet Solaire</h3>
-          <div class="rounded-xl overflow-hidden h-40 w-full shrink-0 border border-white/10 my-2">
-            <img src="photovoltaique philha.png" alt="Projet photovoltaïque de la Philharmonie" class="w-full h-full object-cover hover:scale-105 transition duration-500 zoomable cursor-zoom-in">
-          </div>
-          <p class="text-xs md:text-sm text-zinc-300 leading-relaxed">
-            Nous avons pour projet la mise en service de ces panneaux solaires en toiture afin d'alimenter directement le bâtiment en autoconsommation. Cette installation stratégique permettra de couvrir une partie significative du talon de consommation électrique permanent.
-          </p>
-        </div>
-
-        <!-- Carte 2 : Compteurs TGBT -->
-        <div class="glass-panel p-6 space-y-4 border-l-2 border-emerald-500 flex flex-col">
-          <h3 class="text-xl font-bold text-white flex items-center gap-2">⚡ Supervision TGBT</h3>
-          <div class="rounded-xl overflow-hidden h-40 w-full shrink-0 border border-white/10 my-2">
-            <img src="tgbt gtb.jpg" alt="Compteurs TGBT ajoutés à la GTB" class="w-full h-full object-cover hover:scale-105 transition duration-500 zoomable cursor-zoom-in">
-          </div>
-          <p class="text-xs md:text-sm text-zinc-300 leading-relaxed">
-            Tous les départs de notre tableau électrique principal ont été entièrement reliés à la GTB. Cela nous permet de mieux visualiser les dérives potentielles et de pouvoir optimiser nos consommations d'énergie pour l'avenir.
-          </p>
-          <div class="p-3 bg-black/40 rounded-lg text-xs text-emerald-300 font-mono mt-auto">
-            ✓ Supervision départ par départ
-          </div>
-        </div>
-
-        <!-- Carte 3 : Ventilation Grande Salle -->
-        <div class="glass-panel p-6 space-y-4 border-l-2 border-cyan-500 flex flex-col">
-          <h3 class="text-xl font-bold text-white flex items-center gap-2">🌬️️ Ventilation Salle Boulez</h3>
-          <div class="rounded-xl overflow-hidden h-40 w-full shrink-0 border border-white/10 my-2">
-            <img src="ventilation gtb.jpg" alt="Capture ventilation GTB Grande Salle" class="w-full h-full object-cover hover:scale-105 transition duration-500 zoomable cursor-zoom-in">
-          </div>
-          <p class="text-xs md:text-sm text-zinc-300 leading-relaxed">
-            Interface dédiée de notre supervision permettant de suivre en direct et avec une grande précision l'hygrométrie, la température et les débits d'air au sein de la Grande Salle Pierre Boulez.
-          </p>
-          <div class="p-3 bg-black/40 rounded-lg text-xs text-cyan-300 font-mono mt-auto">
-            ✓ Contrôle de précision climatique
-          </div>
-        </div>
-        
-      </div>
-    </section>
-
-  </main>
-
-  <!-- MODAL LIGHTBOX POUR LES IMAGES -->
-  <div id="imageModal" class="fixed inset-0 z-50 hidden bg-black/95 flex items-center justify-center p-4 transition-opacity duration-300 opacity-0 cursor-zoom-out">
-    <button id="closeModal" class="absolute top-4 right-6 text-white text-4xl hover:text-yellow-400 transition cursor-pointer z-50">&times;</button>
-    <img id="modalImage" src="" alt="Image agrandie" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl scale-95 transition-transform duration-300 pointer-events-none">
-  </div>
-
-  <!-- SCRIPT JS PRINCIPAL -->
-  <script>
-    // --- 1. SYNTHÈSE SONORE PIANO (WEB AUDIO API) ---
-    let audioCtx = null;
-
-    function playPianoNote() {
-      try {
-        if (!audioCtx) {
-          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (audioCtx.state === 'suspended') {
-          audioCtx.resume();
-        }
-
-        const now = audioCtx.currentTime;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-
-        const notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
-        const randomFreq = notes[Math.floor(Math.random() * notes.length)];
-
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(randomFreq, now);
-
-        gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(0.4, now + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc.start(now);
-        osc.stop(now + 1.5);
-      } catch (err) {
-        console.warn("Audio non disponible", err);
-      }
-    }
-
-    // --- 2. DONNÉES HISTORIQUES ÉNERGIE ET EAU (2018 - 2025) ---
-    const years = ['2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'];
-    const elecData = [5794, 5690, 4378, 5240, 5514, 2901, 2918, 2776];
-    const coldData = [3613, 3412, 2448, 2536, 3121, 2759, 2820, 2921];
-    const cpcuData = [null, 3739, 3494, 4858, 3579, 2985, 3309, 2712];
-    const waterData = [16920, 14141, 13941, 9521, 12186, 12345, 12172, 14055];
-
-    const ctx = document.getElementById('energyChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: years,
-        datasets: [
-          {
-            label: 'Électricité (MWh)',
-            data: elecData,
-            borderColor: '#f59e0b',
-            backgroundColor: 'rgba(245, 158, 11, 0.15)',
-            borderWidth: 3,
-            tension: 0.3,
-            fill: true,
-            yAxisID: 'yEnergy'
-          },
-          {
-            label: 'Fraîcheur de Paris (MWh)',
-            data: coldData,
-            borderColor: '#06b6d4',
-            backgroundColor: 'rgba(6, 182, 212, 0.1)',
-            borderWidth: 2,
-            tension: 0.3,
-            yAxisID: 'yEnergy'
-          },
-          {
-            label: 'CPCU Chauffage (MWh)',
-            data: cpcuData,
-            borderColor: '#ef4444',
-            backgroundColor: 'rgba(239, 68, 68, 0.1)',
-            borderWidth: 2,
-            tension: 0.3,
-            yAxisID: 'yEnergy'
-          },
-          {
-            label: 'Eau (m³)',
-            data: waterData,
-            borderColor: '#3b82f6',
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-            borderWidth: 2,
-            borderDash: [5, 5],
-            tension: 0.3,
-            yAxisID: 'yWater'
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { labels: { color: '#d4d4d8', font: { family: 'Montserrat' } } }
-        },
-        scales: {
-          x: { 
-            ticks: { color: '#a1a1aa' }, 
-            grid: { color: 'rgba(255,255,255,0.05)' } 
-          },
-          yEnergy: { 
-            type: 'linear',
-            display: true,
-            position: 'left',
-            title: { display: true, text: 'Énergie (MWh)', color: '#a1a1aa' },
-            ticks: { color: '#a1a1aa' }, 
-            grid: { color: 'rgba(255,255,255,0.05)' } 
-          },
-          yWater: { 
-            type: 'linear',
-            display: true,
-            position: 'right',
-            title: { display: true, text: 'Eau (m³)', color: '#3b82f6' },
-            ticks: { color: '#3b82f6' }, 
-            grid: { drawOnChartArea: false } 
-          }
-        }
-      }
-    });
-
-    // --- 3. DÉCORATION ET EFFET JOUR/NUIT ---
-    const pngFiles = [
-      '01.png', '02.png', '03.png', '04.png', 
-      '05.png', '06.png', '07.png', '08.png'
-    ];
-
-    function renderDecorBirds() {
-      const birdLayer = document.getElementById('birdLayer');
-      const heroSection = document.getElementById('hero');
-      birdLayer.innerHTML = '';
-
-      for (let i = 0; i < 32; i++) {
-        let x = Math.random() * 88 + 6;
-        let y = Math.random() * 80 + 10;
-
-        if (x > 25 && x < 75 && y > 25 && y < 75) {
-          x = x < 50 ? x - 22 : x + 22;
-        }
-
-        const file = pngFiles[i % pngFiles.length];
-        const delay = (Math.random() * 4).toFixed(1);
-
-        const imgNode = document.createElement("img");
-        imgNode.setAttribute("src", file);
-        imgNode.setAttribute("class", "bird-png");
-        imgNode.setAttribute("alt", "Oiseau géométrique décoratif");
-        
-        imgNode.style.left = `${x}%`;
-        imgNode.style.top = `${y}%`;
-        imgNode.style.animationDelay = `${delay}s`;
-
-        imgNode.addEventListener('mouseenter', () => {
-          playPianoNote();
-          heroSection.classList.add('is-night-mode');
-        });
-        
-        imgNode.addEventListener('mouseleave', () => {
-          heroSection.classList.remove('is-night-mode');
-        });
-
-        imgNode.addEventListener('touchstart', (e) => {
-          playPianoNote();
-          imgNode.classList.add('touch-active');
-          heroSection.classList.add('is-night-mode');
-          
-          setTimeout(() => {
-            imgNode.classList.remove('touch-active');
-            heroSection.classList.remove('is-night-mode');
-          }, 1200); 
-        }, { passive: true });
-
-        birdLayer.appendChild(imgNode);
-      }
-    }
-
-    // --- 4. LIGHTBOX / ZOOM IMAGES ---
-    function initLightbox() {
-      const modal = document.getElementById('imageModal');
-      const modalImg = document.getElementById('modalImage');
-      const closeModalBtn = document.getElementById('closeModal');
-      const zoomables = document.querySelectorAll('.zoomable');
-
-      function openModal(src) {
-        modalImg.src = src;
-        modal.classList.remove('hidden');
-        
-        // Timeout pour permettre l'animation de transition Tailwind
-        setTimeout(() => {
-          modal.classList.remove('opacity-0');
-          modalImg.classList.remove('scale-95');
-          modalImg.classList.add('scale-100');
-        }, 10);
-      }
-
-      function closeModal() {
-        modalVoici le code complet corrigé. J'ai ajouté un système de **Lightbox (visionneuse modale)** entièrement responsive (adapté aux téléphones et aux ordinateurs) qui s'ouvre lorsque l'on clique sur l'une des images. 
-
-Pour cela, j'ai :
-1. Ajouté la classe `zoomable cursor-zoom-in` aux images concernées.
-2. Créé la structure HTML cachée de la modale (avec un fond assombri et un bouton fermer).
-3. Ajouté un petit script JavaScript à la fin pour gérer l'ouverture, la fermeture, et de jolies animations fluides.
-
-Voici le code complet :
-
-```html
-<!DOCTYPE html>
-<html lang="fr" class="scroll-smooth bg-[#0a0a0c]">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>La Philharmonie de Paris : Le bâtiment & l'énergie</title>
-
-  <!-- Tailwind CSS, Chart.js & Model-Viewer -->
-  <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-  <script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)"></script>
-  <script type="module" src="[https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js](https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js)"></script>
-
-  <style>
-    @import url('[https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap](https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap)');
-    body { font-family: 'Montserrat', sans-serif; color: #f4f4f5; overflow-x: hidden; }
-
-    /* Hero & Décorations Oiseaux */
-    .hero-container {
-      position: relative;
-      min-height: 75vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      background-color: #0a0a0c;
-    }
-
-    /* Container du texte central */
-    .hero-text-wrap {
-      position: relative;
-      z-index: 10;
-      pointer-events: none;
-      text-align: center;
-      padding: 0 1rem;
-    }
-
-    /* --- GESTION DU TITRE & SOUS-TITRE (JOUR / NUIT) --- */
-    .hero-title, .hero-subtitle {
-      /* Transition douce sur la couleur de remplissage, le contour et l'ombre */
-      transition: color 1.2s cubic-bezier(0.4, 0, 0.2, 1),
-                  -webkit-text-stroke 1.2s cubic-bezier(0.4, 0, 0.2, 1),
-                  text-shadow 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* ÉTAT DE JOUR : FULL BLANC + CONTOUR NOIR ÉPAIS */
-    .hero-title {
-      font-size: clamp(2.2rem, 5vw, 4.5rem);
-      font-weight: 800;
-      line-height: 1.1;
-      color: #ffffff;
-      text-shadow: 
-        -2px -2px 0 #000000,
-         2px -2px 0 #000000,
-        -2px  2px 0 #000000,
-         2px  2px 0 #000000,
-        -2px  0   0 #000000,
-         2px  0   0 #000000,
-         0   -2px 0 #000000,
-         0    2px 0 #000000,
-         0    4px 14px rgba(0, 0, 0, 0.8);
-    }
-
-    .hero-subtitle {
-      font-size: clamp(1.125rem, 2vw, 1.5rem);
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      color: #ffffff;
-      text-shadow: 
-        -1.5px -1.5px 0 #000000,
-         1.5px -1.5px 0 #000000,
-        -1.5px  1.5px 0 #000000,
-         1.5px  1.5px 0 #000000,
-         0      3px 8px rgba(0, 0, 0, 0.8);
-    }
-
-    /* ÉTAT DE NUIT : FULL NOIR + CONTOUR BLANC ÉPAIS */
-    .is-night-mode .hero-title {
-      color: #060608;
-      text-shadow: 
-        -2px -2px 0 #ffffff,
-         2px -2px 0 #ffffff,
-        -2px  2px 0 #ffffff,
-         2px  2px 0 #ffffff,
-        -2px  0   0 #ffffff,
-         2px  0   0 #ffffff,
-         0   -2px 0 #ffffff,
-         0    2px 0 #ffffff,
-         0    0   20px rgba(255, 255, 255, 0.9);
-    }
-
-    .is-night-mode .hero-subtitle {
-      color: #060608;
-      text-shadow: 
-        -1.5px -1.5px 0 #ffffff,
-         1.5px -1.5px 0 #ffffff,
-        -1.5px  1.5px 0 #ffffff,
-         1.5px  1.5px 0 #ffffff,
-         0      0   14px rgba(255, 255, 255, 0.9);
-    }
-    
-    /* Transition fluide du fond de nuit */
-    .bg-night-layer {
-      opacity: 0;
-      transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    /* Déclencheur du fondu vers la nuit */
-    .is-night-mode .bg-night-layer {
-      opacity: 1;
-    }
-
-    .bird-layer {
-      position: absolute;
-      inset: 0;
-      z-index: 15;
-      pointer-events: auto;
-    }
-
-    /* Animation douce pour les oiseaux & Illumination */
-    .bird-png {
-      position: absolute;
-      width: clamp(40px, 5vw, 70px);
-      height: clamp(40px, 5vw, 70px);
-      opacity: 0.85; 
-      cursor: pointer;
-      mix-blend-mode: normal; 
-      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
-                  opacity 0.5s ease, 
-                  filter 0.5s ease;
-      animation: floatBird 6s infinite ease-in-out alternate;
-    }
-
-    .bird-png:hover, .bird-png.touch-active {
-      opacity: 1;
-      transform: scale(1.4) translateY(-8px) !important;
-      filter: drop-shadow(0 0 18px rgba(250, 204, 21, 0.95)) brightness(1.6) sepia(1) hue-rotate(-30deg) saturate(5);
-    }
-
-    @keyframes floatBird {
-      0% { transform: translateY(0px) rotate(0deg); }
-      100% { transform: translateY(-12px) rotate(2deg); }
-    }
-
-    .glass-panel {
-      background: rgba(18, 18, 24, 0.75);
-      backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 1.25rem;
-    }
-
-    model-viewer {
-      width: 100%;
-      height: 100%;
-      --poster-color: transparent;
-      background-color: rgba(0, 0, 0, 0.3);
-      border-radius: 1rem;
-    }
-  </style>
-</head>
-<body class="antialiased bg-[#0a0a0c] text-zinc-100 relative">
-
-  <!-- HERO SECTION -->
-  <header class="hero-container" id="hero">
-    
-    <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat" style="background-image: url('37813204802_db32vxcecb_b (1).jpg');"></div>
-    <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat bg-night-layer" style="background-image: url('37813204802_db32b07ecb_b (1).jpg');"></div>
-
-    <div class="absolute top-6 z-20 px-5 py-2 rounded-full border border-yellow-500/30 bg-black/60 text-yellow-400 text-xs md:text-sm font-semibold flex items-center gap-2 backdrop-blur-md shadow-lg">
-      <span class="w-2.5 h-2.5 rounded-full bg-yellow-400 animate-pulse"></span>
-      Motifs décoratifs : Survolez ou touchez les oiseaux (Son & Lumière)
-    </div>
-
-    <div class="hero-text-wrap my-auto space-y-3">
-      <h1 class="hero-title">La Philharmonie de Paris :<br>Le bâtiment & l'énergie</h1>
-    </div>
-
-    <div class="bird-layer" id="birdLayer"></div>
-  </header>
-
-  <main class="w-full max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-24">
-
-    <!-- SECTION 1 : CHIFFRES CLÉS & MODÈLE 3D / MAPS -->
-    <section class="space-y-10">
-      <div class="border-l-4 border-yellow-500 pl-4">
-        <h2 class="text-3xl md:text-4xl font-extrabold text-white">1. Introduction & Chiffres Clés</h2>
-        <p class="text-zinc-400 text-sm md:text-base mt-1">L'édifice d'exception conçu par les Ateliers Jean Nouvel.</p>
-      </div>
-
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="glass-panel p-5 text-center hover:border-yellow-500/40 transition">
-          <div class="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Surface Utile / Brute</div>
-          <div class="text-2xl md:text-3xl font-bold text-yellow-400 mt-1">42k / 90k m²</div>
-          <div class="text-xs text-zinc-500 mt-1">Surface utile 42 000 m² • Brute 85k-90k m²</div>
-        </div>
-        <div class="glass-panel p-5 text-center hover:border-yellow-500/40 transition">
-          <div class="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Hauteur & Belvédère</div>
-          <div class="text-2xl md:text-3xl font-bold text-yellow-400 mt-1">52m / 37m</div>
-          <div class="text-xs text-zinc-500 mt-1">Hauteur totale 52m • Belvédère à 37m</div>
-        </div>
-        <div class="glass-panel p-5 text-center hover:border-yellow-500/40 transition">
-          <div class="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Grande Salle Pierre Boulez</div>
-          <div class="text-2xl md:text-3xl font-bold text-yellow-400 mt-1">30 000 m³</div>
-          <div class="text-xs text-zinc-500 mt-1">2400 assises / 3500 (assis + fosse)</div>
-        </div>
-        <div class="glass-panel p-5 text-center hover:border-yellow-500/40 transition">
-          <div class="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Architecture</div>
-          <div class="text-xl md:text-2xl font-bold text-white mt-1">Ateliers Jean Nouvel</div>
-          <div class="text-xs text-zinc-500 mt-1">Béton, acier & enveloppe aluminium</div>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="glass-panel p-4 flex flex-col h-[450px] shadow-2xl relative">
-          <div class="flex items-center justify-between mb-3 px-2">
-            <span class="text-xs font-semibold text-yellow-400 flex items-center gap-2">
-              🧊 Modèle 3D Interactif du Bâtiment
-            </span>
-            <span class="text-[10px] text-zinc-400">Pincez / Tournez pour naviguer</span>
-          </div>
-          <div class="flex-1 overflow-hidden rounded-xl">
-            <model-viewer 
-              src="philharmonie.glb" 
-              alt="Modèle 3D Philharmonie de Paris" 
-              auto-rotate 
-              camera-controls 
-              shadow-intensity="1">
-            </model-viewer>
-          </div>
-        </div>
-
-        <div class="glass-panel p-4 flex flex-col h-[450px] shadow-2xl relative">
-          <div class="flex items-center justify-between mb-3 px-2">
-            <span class="text-xs font-semibold text-yellow-400 flex items-center gap-2">
-              🗺️ Vue 2.5D & Implantation Street View
-            </span>
-            <span class="text-[10px] text-zinc-400">Parc de la Villette, Paris 19e</span>
-          </div>
-          <div class="flex-1 overflow-hidden rounded-xl">
-            <iframe 
-              src="[https://www.google.com/maps/embed?pb=!4v1700000000000!6m8!1m7!1sGA4yqvXG7ix0gN5TagDxNw!2m2!1d48.8917101!2d2.3942711!3f26.59!4f0deg!5f0.7820865974627469](https://www.google.com/maps/embed?pb=!4v1700000000000!6m8!1m7!1sGA4yqvXG7ix0gN5TagDxNw!2m2!1d48.8917101!2d2.3942711!3f26.59!4f0deg!5f0.7820865974627469)" 
-              width="100%" 
-              height="100%" 
-              style="border:0;" 
-              allowfullscreen="" 
-              loading="lazy" 
-              referrerpolicy="no-referrer-when-downgrade">
-            </iframe>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 2 : ANATOMIE DU BÂTIMENT & GTB -->
-    <section class="space-y-8">
-      <div class="border-l-4 border-yellow-500 pl-4">
-        <h2 class="text-3xl md:text-4xl font-extrabold text-white">2. L'Anatomie du Bâtiment (Comment ça marche ?)</h2>
-        <p class="text-zinc-400 text-sm md:text-base mt-1">Réseaux urbains centralisés et supervision GTB en temps réel.</p>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="glass-panel p-6 space-y-4">
-          <div class="flex items-center gap-3">
-            <div class="p-3 bg-yellow-500/10 rounded-xl text-yellow-400 text-xl">⚡</div>
-            <h3 class="text-xl font-bold text-white">Les Réseaux Urbains</h3>
-          </div>
-          <p class="text-sm text-zinc-300 leading-relaxed">
-            Afin d'assurer le confort thermique et la climatisation du bâtiment sans utiliser de groupes frigorifiques autonomes volumineux, la Philharmonie est directement raccordée aux réseaux urbains parisiens :
-          </p>
-          <ul class="space-y-3 text-xs md:text-sm text-zinc-400">
-            <li class="flex items-start gap-2">
-              <span class="text-red-400 font-bold">●</span>
-              <span><strong class="text-zinc-200">CPCU (Chauffage Urbain) :</strong> Alimentation en vapeur chaude pour le chauffage des espaces et l'humidification contrôlée de l'air.</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-cyan-400 font-bold">●</span>
-              <span><strong class="text-zinc-200">Fraîcheur de Paris (Froid Urbain) :</strong> Distribution d'eau glacée pour le rafraîchissement des salles de concert, des studios et des locaux techniques.</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-blue-400 font-bold">●</span>
-              <span><strong class="text-zinc-200">Réseau d'Eau :</strong> Alimentation et gestion centralisée des fluides optimisée.</span>
-            </li>
-          </ul>
-        </div>
-
-        <div class="glass-panel p-6 space-y-4">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 text-xl">🖥</div>
-              <h3 class="text-xl font-bold text-white">Cœur Électrique & Supervision GTB</h3>
-            </div>
-            <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-full border border-emerald-500/30 font-mono">GTB ACTIF</span>
-          </div>
-
-          <div class="rounded-xl overflow-hidden border border-white/10 shadow-lg mt-4 group">
-            <!-- Ajout des classes 'zoomable' et 'cursor-zoom-in' -->
-            <img src="ctaaa.jpg" alt="Page d'accueil de la GTB de la Philharmonie de Paris" class="w-full object-cover zoomable cursor-zoom-in group-hover:scale-105 transition duration-500">
-          </div>
-          
-          <p class="text-xs text-zinc-400 italic">Page d'accueil de la gestion technique du bâtiment affichant nos CTA et les informations générales en temps réel. Cliquez pour agrandir.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 3 : MAINTIEN DU CLIMAT -->
-    <section class="space-y-8">
-      <div class="border-l-4 border-yellow-500 pl-4">
-        <h2 class="text-3xl md:text-4xl font-extrabold text-white">3. Le Maintien du Climat : Une Contrainte Artistique</h2>
-        <p class="text-zinc-400 text-sm md:text-base mt-1">Protéger le bois, les cordes et les mécanismes précieux des instruments.</p>
-      </div>
-
-      <div class="glass-panel p-6 md:p-8 space-y-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="p-4 bg-white/5 rounded-xl border border-white/5 space-y-2">
-            <h4 class="text-yellow-400 font-bold text-base">🎻 Hygrométrie de Précision</h4>
-            <p class="text-xs text-zinc-300 leading-relaxed">
-              Tolérance de variation d'humidité strictement contrôlée pour éviter le dessèchement ou la déformation du bois des instruments patrimoniaux et de collection.
-            </p>
-          </div>
-          <div class="p-4 bg-white/5 rounded-xl border border-white/5 space-y-2">
-            <h4 class="text-yellow-400 font-bold text-base">🎹 Pianos de Concert</h4>
-            <p class="text-xs text-zinc-300 leading-relaxed">
               Les pianos de  concert conservés en réserve nécessitent une stabilité de température et d'hygrométrie constante avant leur installation sur scène.
+
             </p>
+
           </div>
+
           <div class="p-4 bg-white/5 rounded-xl border border-white/5 space-y-2">
+
             <h4 class="text-yellow-400 font-bold text-base">🎼 L'Orgue </h4>
+
             <p class="text-xs text-zinc-300 leading-relaxed">
+
               L'orgue intégré à la grande salle est composé de milliers de tuyaux extrêmement sensibles aux écarts thermiques, influençant directement la justesse de l'accordage.
+
             </p>
+
           </div>
+
         </div>
+
+
 
         <div class="relative rounded-2xl overflow-hidden h-80 shadow-2xl border border-white/10 group">
-          <!-- Ajout des classes 'zoomable' et 'cursor-zoom-in' -->
+
           <img 
+
             src="Piano_Paris_wbp.webp" 
+
             alt="Pianos de concert en réserve régulée" 
-            class="w-full h-full object-cover group-hover:scale-105 transition duration-700 zoomable cursor-zoom-in"
+
+            class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+
           >
-          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex items-end p-6 pointer-events-none">
+
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex items-end p-6">
+
             <div>
+
               <span class="text-xs text-yellow-400 font-semibold tracking-wider uppercase">Ateliers & Réserves</span>
+
               <h3 class="text-xl font-bold text-white">Ateliers et espaces de stockage des pianos de concert</h3>
+
             </div>
+
           </div>
+
         </div>
+
       </div>
+
     </section>
+
+
 
     <!-- SECTION 4 : BILAN ÉNERGÉTIQUE -->
+
     <section class="space-y-10">
+
       <div class="border-l-4 border-yellow-500 pl-4">
+
         <h2 class="text-3xl md:text-4xl font-extrabold text-white">4. Bilan Énergétique : La Chasse au Gaspillage (2022 - 2025)</h2>
+
         <p class="text-zinc-400 text-sm md:text-base mt-1">Évolution des consommations et actions d'efficacité énergétique.</p>
+
       </div>
+
+
 
       <div class="glass-panel p-6 md:p-8 space-y-6 shadow-2xl">
+
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+
           <div>
+
             <h3 class="text-xl font-bold text-white">Historique des Consommations</h3>
+
             <p class="text-xs text-zinc-400">Données de 2018 à 2025</p>
+
           </div>
+
           <div class="flex flex-wrap gap-2 text-xs">
+
             <span class="px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full border border-amber-500/30">⚡ Électricité (MWh)</span>
+
             <span class="px-3 py-1 bg-cyan-500/20 text-cyan-300 rounded-full border border-cyan-500/30">❄️ Fraîcheur (MWh)</span>
+
             <span class="px-3 py-1 bg-red-500/20 text-red-300 rounded-full border border-red-500/30">🔥 CPCU (MWh)</span>
+
             <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/30">💧 Eau (m³)</span>
+
           </div>
+
         </div>
+
+
 
         <div class="relative h-[380px] w-full">
+
           <canvas id="energyChart"></canvas>
+
         </div>
+
+
 
         <div class="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-300 text-xs md:text-sm flex items-center gap-3">
+
           <span class="text-xl">📉</span>
+
           <div>
+
             <strong>Synthèse de sobriété :</strong> Chute marquée des consommations électriques, passant de plus de <strong>5 500 MWh/an</strong> à moins de <strong>2 800 MWh/an</strong> entre 2022 et 2025 grâce aux mesures d'optimisation engagées. L'eau reste optimisée annuellement.
+
           </div>
+
         </div>
+
       </div>
+
+
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
         <div class="glass-panel p-6 space-y-3">
+
           <div class="text-yellow-400 text-xl font-bold">01. Relamping LED Massif</div>
+
           <p class="text-xs text-zinc-400">Réalisé fin 2025</p>
+
           <p class="text-xs text-zinc-300 leading-relaxed">
+
             Passage intégral en éclairage LED pour les projecteurs scéniques, les espaces publics et l'illumination architecturale.
+
           </p>
+
         </div>
+
         <div class="glass-panel p-6 space-y-3">
+
           <div class="text-yellow-400 text-xl font-bold">02. Détecteurs de Présence</div>
+
           <p class="text-xs text-zinc-400">Déploiement 2025</p>
+
           <p class="text-xs text-zinc-300 leading-relaxed">
+
             Installation de capteurs intelligents dans l'ensemble des zones d'occupation intermittente et circulations techniques.
+
           </p>
+
         </div>
+
         <div class="glass-panel p-6 space-y-3">
+
           <div class="text-yellow-400 text-xl font-bold">03. Optimisation GTB</div>
+
           <p class="text-xs text-zinc-400">Programmation Stricte</p>
+
           <p class="text-xs text-zinc-300 leading-relaxed">
+
             Ajustement fin du fonctionnement des centrales de traitement d'air (CTA) et des éclairages selon l'occupation réelle des salles.
+
           </p>
+
         </div>
+
       </div>
+
     </section>
+
+
 
     <!-- SECTION 5 : CAP VERS L'AVENIR -->
+
     <section class="space-y-8">
+
       <div class="border-l-4 border-yellow-500 pl-4">
+
         <h2 class="text-3xl md:text-4xl font-extrabold text-white">5. Cap vers l'Avenir : L'Énergie de Demain</h2>
+
         <p class="text-zinc-400 text-sm md:text-base mt-1">Smart grid interne et projets d'autoconsommation.</p>
+
       </div>
+
+
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
         
+
         <!-- Carte 1 : Photovoltaïque -->
+
         <div class="glass-panel p-6 space-y-4 border-l-2 border-yellow-500 flex flex-col">
+
           <h3 class="text-xl font-bold text-white flex items-center gap-2">☀️ Le Projet Solaire</h3>
-          <div class="rounded-xl overflow-hidden h-40 w-full shrink-0 border border-white/10 my-2 group">
-            <img src="photovoltaique philha.png" alt="Projet photovoltaïque de la Philharmonie" class="w-full h-full object-cover zoomable cursor-zoom-in group-hover:scale-105 transition duration-500">
+
+          <div class="rounded-xl overflow-hidden h-40 w-full shrink-0 border border-white/10 my-2">
+
+            <img src="photovoltaique philha.png" alt="Projet photovoltaïque de la Philharmonie" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+
           </div>
+
           <p class="text-xs md:text-sm text-zinc-300 leading-relaxed">
+
             Nous avons pour projet la mise en service de ces panneaux solaires en toiture afin d'alimenter directement le bâtiment en autoconsommation. Cette installation stratégique permettra de couvrir une partie significative du talon de consommation électrique permanent.
+
           </p>
+
         </div>
+
+
 
         <!-- Carte 2 : Compteurs TGBT -->
+
         <div class="glass-panel p-6 space-y-4 border-l-2 border-emerald-500 flex flex-col">
+
           <h3 class="text-xl font-bold text-white flex items-center gap-2">⚡ Supervision TGBT</h3>
-          <div class="rounded-xl overflow-hidden h-40 w-full shrink-0 border border-white/10 my-2 group">
-            <img src="tgbt gtb.jpg" alt="Compteurs TGBT ajoutés à la GTB" class="w-full h-full object-cover zoomable cursor-zoom-in group-hover:scale-105 transition duration-500">
+
+          <div class="rounded-xl overflow-hidden h-40 w-full shrink-0 border border-white/10 my-2">
+
+            <img src="tgbt gtb.jpg" alt="Compteurs TGBT ajoutés à la GTB" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+
           </div>
+
           <p class="text-xs md:text-sm text-zinc-300 leading-relaxed">
+
             Tous les départs de notre tableau électrique principal ont été entièrement reliés à la GTB. Cela nous permet de mieux visualiser les dérives potentielles et de pouvoir optimiser nos consommations d'énergie pour l'avenir.
+
           </p>
+
           <div class="p-3 bg-black/40 rounded-lg text-xs text-emerald-300 font-mono mt-auto">
+
             ✓ Supervision départ par départ
+
           </div>
+
         </div>
 
+
+
         <!-- Carte 3 : Ventilation Grande Salle -->
+
         <div class="glass-panel p-6 space-y-4 border-l-2 border-cyan-500 flex flex-col">
+
           <h3 class="text-xl font-bold text-white flex items-center gap-2">🌬️ Ventilation Salle Boulez</h3>
-          <div class="rounded-xl overflow-hidden h-40 w-full shrink-0 border border-white/10 my-2 group">
-            <img src="ventilation gtb.jpg" alt="Capture ventilation GTB Grande Salle" class="w-full h-full object-cover zoomable cursor-zoom-in group-hover:scale-105 transition duration-500">
+
+          <div class="rounded-xl overflow-hidden h-40 w-full shrink-0 border border-white/10 my-2">
+
+            <img src="ventilation gtb.jpg" alt="Capture ventilation GTB Grande Salle" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+
           </div>
+
           <p class="text-xs md:text-sm text-zinc-300 leading-relaxed">
+
             Interface dédiée de notre supervision permettant de suivre en direct et avec une grande précision l'hygrométrie, la température et les débits d'air au sein de la Grande Salle Pierre Boulez.
+
           </p>
+
           <div class="p-3 bg-black/40 rounded-lg text-xs text-cyan-300 font-mono mt-auto">
+
             ✓ Contrôle de précision climatique
+
           </div>
+
         </div>
+
         
+
       </div>
+
     </section>
+
+
 
   </main>
 
-  <!-- HTML POUR LA LIGHTBOX (MODALE) -->
-  <div id="lightbox" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/95 p-4 transition-opacity duration-300 opacity-0 backdrop-blur-md cursor-zoom-out" onclick="closeLightbox()">
-    <button class="absolute top-6 right-6 text-white hover:text-yellow-400 text-4xl font-light transition-colors z-50 focus:outline-none">&times;</button>
-    <img id="lightbox-img" class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl transition-transform duration-300 scale-95" src="" alt="Image en plein écran">
-  </div>
+
 
   <!-- SCRIPT JS PRINCIPAL -->
+
   <script>
+
     // --- 1. SYNTHÈSE SONORE PIANO (WEB AUDIO API) ---
+
     let audioCtx = null;
 
+
+
     function playPianoNote() {
+
       try {
+
         if (!audioCtx) {
+
           audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
         }
+
         if (audioCtx.state === 'suspended') {
+
           audioCtx.resume();
+
         }
+
+
 
         const now = audioCtx.currentTime;
+
         const osc = audioCtx.createOscillator();
+
         const gain = audioCtx.createGain();
 
+
+
         const notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
+
         const randomFreq = notes[Math.floor(Math.random() * notes.length)];
 
+
+
         osc.type = 'triangle';
+
         osc.frequency.setValueAtTime(randomFreq, now);
 
+
+
         gain.gain.setValueAtTime(0, now);
+
         gain.gain.linearRampToValueAtTime(0.4, now + 0.02);
+
         gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
 
+
+
         osc.connect(gain);
+
         gain.connect(audioCtx.destination);
 
+
+
         osc.start(now);
+
         osc.stop(now + 1.5);
+
       } catch (err) {
+
         console.warn("Audio non disponible", err);
+
       }
+
     }
+
+
 
     // --- 2. DONNÉES HISTORIQUES ÉNERGIE ET EAU (2018 - 2025) ---
+
     const years = ['2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'];
+
     const elecData = [5794, 5690, 4378, 5240, 5514, 2901, 2918, 2776];
+
     const coldData = [3613, 3412, 2448, 2536, 3121, 2759, 2820, 2921];
+
     const cpcuData = [null, 3739, 3494, 4858, 3579, 2985, 3309, 2712];
+
     const waterData = [16920, 14141, 13941, 9521, 12186, 12345, 12172, 14055];
 
+
+
     const ctx = document.getElementById('energyChart').getContext('2d');
+
     new Chart(ctx, {
+
       type: 'line',
+
       data: {
+
         labels: years,
+
         datasets: [
+
           {
+
             label: 'Électricité (MWh)',
+
             data: elecData,
+
             borderColor: '#f59e0b',
+
             backgroundColor: 'rgba(245, 158, 11, 0.15)',
+
             borderWidth: 3,
+
             tension: 0.3,
+
             fill: true,
+
             yAxisID: 'yEnergy'
+
           },
+
           {
+
             label: 'Fraîcheur de Paris (MWh)',
+
             data: coldData,
+
             borderColor: '#06b6d4',
+
             backgroundColor: 'rgba(6, 182, 212, 0.1)',
+
             borderWidth: 2,
+
             tension: 0.3,
+
             yAxisID: 'yEnergy'
+
           },
+
           {
+
             label: 'CPCU Chauffage (MWh)',
+
             data: cpcuData,
+
             borderColor: '#ef4444',
+
             backgroundColor: 'rgba(239, 68, 68, 0.1)',
+
             borderWidth: 2,
+
             tension: 0.3,
+
             yAxisID: 'yEnergy'
+
           },
+
           {
+
             label: 'Eau (m³)',
+
             data: waterData,
+
             borderColor: '#3b82f6',
+
             backgroundColor: 'rgba(59, 130, 246, 0.1)',
+
             borderWidth: 2,
+
             borderDash: [5, 5],
+
             tension: 0.3,
+
             yAxisID: 'yWater'
+
           }
+
         ]
+
       },
+
       options: {
+
         responsive: true,
+
         maintainAspectRatio: false,
+
         plugins: {
+
           legend: { labels: { color: '#d4d4d8', font: { family: 'Montserrat' } } }
+
         },
+
         scales: {
+
           x: { 
+
             ticks: { color: '#a1a1aa' }, 
+
             grid: { color: 'rgba(255,255,255,0.05)' } 
+
           },
+
           yEnergy: { 
+
             type: 'linear',
+
             display: true,
+
             position: 'left',
+
             title: { display: true, text: 'Énergie (MWh)', color: '#a1a1aa' },
+
             ticks: { color: '#a1a1aa' }, 
+
             grid: { color: 'rgba(255,255,255,0.05)' } 
+
           },
+
           yWater: { 
+
             type: 'linear',
+
             display: true,
+
             position: 'right',
+
             title: { display: true, text: 'Eau (m³)', color: '#3b82f6' },
+
             ticks: { color: '#3b82f6' }, 
+
             grid: { drawOnChartArea: false } 
+
           }
+
         }
+
       }
+
     });
 
+
+
     // --- 3. DÉCORATION ET EFFET JOUR/NUIT ---
+
     const pngFiles = [
+
       '01.png', '02.png', '03.png', '04.png', 
+
       '05.png', '06.png', '07.png', '08.png'
+
     ];
 
+
+
     function renderDecorBirds() {
+
       const birdLayer = document.getElementById('birdLayer');
+
       const heroSection = document.getElementById('hero');
+
       birdLayer.innerHTML = '';
 
+
+
       for (let i = 0; i < 32; i++) {
+
         let x = Math.random() * 88 + 6;
+
         let y = Math.random() * 80 + 10;
 
+
+
         if (x > 25 && x < 75 && y > 25 && y < 75) {
+
           x = x < 50 ? x - 22 : x + 22;
+
         }
 
+
+
         const file = pngFiles[i % pngFiles.length];
+
         const delay = (Math.random() * 4).toFixed(1);
 
+
+
         const imgNode = document.createElement("img");
+
         imgNode.setAttribute("src", file);
+
         imgNode.setAttribute("class", "bird-png");
+
         imgNode.setAttribute("alt", "Oiseau géométrique décoratif");
+
         
+
         imgNode.style.left = `${x}%`;
+
         imgNode.style.top = `${y}%`;
+
         imgNode.style.animationDelay = `${delay}s`;
 
+
+
         imgNode.addEventListener('mouseenter', () => {
+
           playPianoNote();
+
           heroSection.classList.add('is-night-mode');
+
         });
+
         
+
         imgNode.addEventListener('mouseleave', () => {
+
           heroSection.classList.remove('is-night-mode');
+
         });
+
+
 
         imgNode.addEventListener('touchstart', (e) => {
+
           playPianoNote();
+
           imgNode.classList.add('touch-active');
+
           heroSection.classList.add('is-night-mode');
+
           
+
           setTimeout(() => {
+
             imgNode.classList.remove('touch-active');
+
             heroSection.classList.remove('is-night-mode');
+
           }, 1200); 
+
         }, { passive: true });
 
+
+
         birdLayer.appendChild(imgNode);
+
       }
+
     }
+
+
 
     window.addEventListener('DOMContentLoaded', renderDecorBirds);
 
-    // --- 4. GESTION DU LIGHTBOX (VISIONNEUSE D'IMAGES) ---
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-
-    // Attacher l'événement click à toutes les images avec la classe "zoomable"
-    document.querySelectorAll('.zoomable').forEach(img => {
-      img.addEventListener('click', (e) => {
-        e.stopPropagation(); // Empêche le clic de se propager
-        lightboxImg.src = img.src; // Récupère la source de l'image cliquée
-        lightbox.classList.remove('hidden');
-        lightbox.classList.add('flex'); // Assure que la modale est flex
-        
-        // Délai minimal pour que la transition CSS d'opacité/scale fonctionne
-        setTimeout(() => {
-          lightbox.classList.remove('opacity-0');
-          lightboxImg.classList.remove('scale-95');
-          lightboxImg.classList.add('scale-100');
-        }, 10);
-      });
-    });
-
-    // Fonction pour fermer la modale
-    function closeLightbox() {
-      lightbox.classList.add('opacity-0');
-      lightboxImg.classList.remove('scale-100');
-      lightboxImg.classList.add('scale-95');
-      
-      // On cache complètement après l'animation CSS (300ms)
-      setTimeout(() => {
-        lightbox.classList.add('hidden');
-        lightbox.classList.remove('flex');
-        lightboxImg.src = ''; // Réinitialiser la source
-      }, 300);
-    }
   </script>
+
 </body>
+
 </html>
